@@ -31,7 +31,7 @@ func (r *render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Scale(0.25, 0.25)
-		op.GeoM.Translate(position.X, position.Y)
+		op.GeoM.Translate(position.X+4, position.Y+4)
 		screen.DrawImage(sprite.Image, op)
 	})
 }
