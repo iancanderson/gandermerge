@@ -34,9 +34,10 @@ func (s *OrbSpawner) Startup(ecs *ecs.ECS) {
 		rows*columns,
 		component.Position,
 		component.Sprite,
+		component.Energy,
 	)
 
-	image := loadSprite()
+	images := loadEnergyTypeImages()
 
 	for row := 0; row < rows; row++ {
 		for col := 0; col < columns; col++ {
@@ -48,14 +49,30 @@ func (s *OrbSpawner) Startup(ecs *ecs.ECS) {
 					Y: float64(row) * rowHeight,
 				})
 
+			energyType := component.RandomEnergyType()
+			donburi.SetValue(entry, component.Energy,
+				component.EnergyData{
+					EnergyType: energyType,
+				})
+
 			donburi.SetValue(entry, component.Sprite,
-				component.SpriteData{Image: image})
+				component.SpriteData{Image: images[energyType]})
 		}
 	}
 }
 
-func loadSprite() *ebiten.Image {
-	img, _, err := image.Decode(bytes.NewReader(images.Electric_png))
+func loadEnergyTypeImages() map[component.EnergyType]*ebiten.Image {
+	return map[component.EnergyType]*ebiten.Image{
+		component.Electric: loadImage(images.Electric_png),
+		component.Fire:     loadImage(images.Fire_png),
+		component.Ghost:    loadImage(images.Ghost_png),
+		component.Poison:   loadImage(images.Poison_png),
+		component.Psychic:  loadImage(images.Psychic_png),
+	}
+}
+
+func loadImage(data []byte) *ebiten.Image {
+	img, _, err := image.Decode(bytes.NewReader(data))
 	if err != nil {
 		log.Fatal(err)
 	}

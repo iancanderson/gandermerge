@@ -12,6 +12,9 @@ import (
 	"github.com/yohamta/donburi/ecs"
 )
 
+const windowHeight = 384
+const windowWidth = 384
+
 type Game struct {
 	ecs *ecs.ECS
 }
@@ -28,7 +31,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 384, 768
+	return windowWidth, windowHeight
 }
 
 func NewGame() *Game {
@@ -64,7 +67,7 @@ func createWorld() donburi.World {
 func main() {
 	ebiten.SetWindowTitle("Gandermerge")
 
-	ebiten.SetWindowSize(384, 768)
+	ebiten.SetWindowSize(windowWidth, windowHeight)
 	ebiten.SetWindowSizeLimits(300, 200, -1, -1)
 	ebiten.SetFPSMode(ebiten.FPSModeVsyncOffMaximum)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
