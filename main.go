@@ -6,7 +6,8 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/iancanderson/gandermerge/layers"
+	"github.com/iancanderson/gandermerge/system"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 )
@@ -20,17 +21,33 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	ebitenutil.DebugPrint(screen, "Hello, World!")
+	g.ecs.DrawLayer(layers.LayerBackground, screen)
+	g.ecs.DrawLayer(layers.LayerOrbs, screen)
+	g.ecs.DrawLayer(layers.LayerMetrics, screen)
+	// ebitenutil.DebugPrint(screen, "Hello, World!")
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 320, 240
+	return 384, 768
 }
 
 func NewGame() *Game {
-	return &Game{
+	g := &Game{
 		ecs: createECS(),
 	}
+	orbSpawner := system.NewOrbSpawner()
+	orbSpawner.Startup(g.ecs)
+
+	g.ecs.AddSystems(
+		// ecs.System{
+		// 	Update: orbSpawner.Update,
+		// },
+		ecs.System{
+			Layer: layers.LayerOrbs,
+			Draw:  system.Render.Draw,
+		},
+	)
+	return g
 }
 
 func createECS() *ecs.ECS {
@@ -47,7 +64,7 @@ func createWorld() donburi.World {
 func main() {
 	ebiten.SetWindowTitle("Gandermerge")
 
-	ebiten.SetWindowSize(800, 600)
+	ebiten.SetWindowSize(384, 768)
 	ebiten.SetWindowSizeLimits(300, 200, -1, -1)
 	ebiten.SetFPSMode(ebiten.FPSModeVsyncOffMaximum)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
