@@ -21,6 +21,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	screen.Clear()
 	g.ecs.DrawLayer(layers.LayerBackground, screen)
 	g.ecs.DrawLayer(layers.LayerOrbs, screen)
 	g.ecs.DrawLayer(layers.LayerMetrics, screen)
