@@ -4,6 +4,7 @@ import (
 	"github.com/iancanderson/gandermerge/component"
 	"github.com/iancanderson/gandermerge/config"
 	"github.com/iancanderson/gandermerge/layers"
+	"github.com/iancanderson/gandermerge/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/filter"
@@ -24,24 +25,9 @@ var GridGravity = &gridGravity{
 }
 
 func (g *gridGravity) Update(ecs *ecs.ECS) {
-	grid := g.buildGrid(ecs)
+	grid := util.BuildGrid(ecs)
 	g.setNewGridPositions(grid)
 	g.animateToGridPositions(ecs)
-}
-
-func (g *gridGravity) buildGrid(ecs *ecs.ECS) [][]*donburi.Entry {
-	// Store grid in two dimensional array
-	grid := make([][]*donburi.Entry, config.Columns)
-
-	// Keep track of where the empty space is
-	g.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
-		gridPosition := component.GetGridPosition(entry)
-		if grid[gridPosition.Col] == nil {
-			grid[gridPosition.Col] = make([]*donburi.Entry, config.Rows)
-		}
-		grid[gridPosition.Col][gridPosition.Row] = entry
-	})
-	return grid
 }
 
 func (g *gridGravity) setNewGridPositions(grid [][]*donburi.Entry) {
