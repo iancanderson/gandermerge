@@ -42,11 +42,14 @@ func NewGame() *Game {
 	orbSpawner.Startup(g.ecs)
 
 	g.ecs.AddSystems(
-		// ecs.System{
-		// 	Update: orbSpawner.Update,
-		// },
 		ecs.System{
 			Update: system.Input.Update,
+		},
+		ecs.System{
+			Update: system.GridGravity.Update,
+		},
+		ecs.System{
+			Update: orbSpawner.Update,
 		},
 		ecs.System{
 			Layer: layers.LayerOrbs,

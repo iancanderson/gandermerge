@@ -8,15 +8,13 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/iancanderson/gandermerge/assets/images"
 	"github.com/iancanderson/gandermerge/component"
+	"github.com/iancanderson/gandermerge/config"
 	"github.com/iancanderson/gandermerge/layers"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 )
 
-const columns = 8
-const rows = 8
-const columnWidth = 48
-const rowHeight = 48
+const desiredOrbCount = config.Rows * config.Columns
 
 type OrbSpawner struct {
 }
@@ -26,12 +24,13 @@ func NewOrbSpawner() *OrbSpawner {
 }
 
 func (s *OrbSpawner) Update(ecs *ecs.ECS) {
+	// Spawn orbs to get to the desired number
 }
 
 func (s *OrbSpawner) Startup(ecs *ecs.ECS) {
 	orbs := ecs.CreateMany(
 		layers.LayerOrbs,
-		rows*columns,
+		desiredOrbCount,
 		component.Energy,
 		component.GridPosition,
 		component.Selectable,
@@ -40,9 +39,9 @@ func (s *OrbSpawner) Startup(ecs *ecs.ECS) {
 
 	images := loadEnergyTypeImages()
 
-	for row := 0; row < rows; row++ {
-		for col := 0; col < columns; col++ {
-			entry := ecs.World.Entry(orbs[row*columns+col])
+	for row := 0; row < config.Rows; row++ {
+		for col := 0; col < config.Columns; col++ {
+			entry := ecs.World.Entry(orbs[row*config.Columns+col])
 
 			energyType := component.RandomEnergyType()
 			donburi.SetValue(entry, component.Energy,
@@ -53,8 +52,8 @@ func (s *OrbSpawner) Startup(ecs *ecs.ECS) {
 			donburi.SetValue(entry, component.Sprite,
 				component.SpriteData{
 					Image: images[energyType],
-					X:     float64(col) * columnWidth,
-					Y:     float64(row) * rowHeight,
+					X:     float64(col) * config.ColumnWidth,
+					Y:     float64(row) * config.RowHeight,
 					Scale: 0.25,
 				})
 
