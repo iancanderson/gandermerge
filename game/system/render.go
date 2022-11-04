@@ -32,6 +32,7 @@ func (r *render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Scale(sprite.Scale, sprite.Scale)
 		op.GeoM.Translate(sprite.X+4, sprite.Y+4)
+		op.Filter = ebiten.FilterLinear
 		if selectable.Selected {
 			op.ColorM.Scale(0.5, 0.5, 0.5, 1)
 		}
