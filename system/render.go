@@ -19,19 +19,23 @@ var Render = &render{
 	query: ecs.NewQuery(
 		layers.LayerOrbs,
 		filter.Contains(
-			component.Position,
 			component.Sprite,
+			component.Selectable,
 		)),
 }
 
 func (r *render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	r.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
-		position := component.GetPosition(entry)
 		sprite := component.GetSprite(entry)
+		selectable := component.GetSelectable(entry)
 
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(0.25, 0.25)
-		op.GeoM.Translate(position.X+4, position.Y+4)
+		op.GeoM.Scale(sprite.Scale, sprite.Scale)
+		op.GeoM.Translate(sprite.X+4, sprite.Y+4)
+		if selectable.Selected {
+			op.ColorM.Scale(0.5, 0.5, 0.5, 1)
+		}
+
 		screen.DrawImage(sprite.Image, op)
 	})
 }

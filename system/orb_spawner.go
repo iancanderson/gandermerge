@@ -32,9 +32,10 @@ func (s *OrbSpawner) Startup(ecs *ecs.ECS) {
 	orbs := ecs.CreateMany(
 		layers.LayerOrbs,
 		rows*columns,
-		component.Position,
-		component.Sprite,
 		component.Energy,
+		component.GridPosition,
+		component.Selectable,
+		component.Sprite,
 	)
 
 	images := loadEnergyTypeImages()
@@ -43,12 +44,6 @@ func (s *OrbSpawner) Startup(ecs *ecs.ECS) {
 		for col := 0; col < columns; col++ {
 			entry := ecs.World.Entry(orbs[row*columns+col])
 
-			donburi.SetValue(entry, component.Position,
-				component.PositionData{
-					X: float64(col) * columnWidth,
-					Y: float64(row) * rowHeight,
-				})
-
 			energyType := component.RandomEnergyType()
 			donburi.SetValue(entry, component.Energy,
 				component.EnergyData{
@@ -56,7 +51,18 @@ func (s *OrbSpawner) Startup(ecs *ecs.ECS) {
 				})
 
 			donburi.SetValue(entry, component.Sprite,
-				component.SpriteData{Image: images[energyType]})
+				component.SpriteData{
+					Image: images[energyType],
+					X:     float64(col) * columnWidth,
+					Y:     float64(row) * rowHeight,
+					Scale: 0.25,
+				})
+
+			donburi.SetValue(entry, component.GridPosition,
+				component.GridPositionData{
+					Row: row,
+					Col: col,
+				})
 		}
 	}
 }

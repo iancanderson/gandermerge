@@ -20,6 +20,7 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+	g.ecs.Update()
 	return nil
 }
 
@@ -27,7 +28,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.ecs.DrawLayer(layers.LayerBackground, screen)
 	g.ecs.DrawLayer(layers.LayerOrbs, screen)
 	g.ecs.DrawLayer(layers.LayerMetrics, screen)
-	// ebitenutil.DebugPrint(screen, "Hello, World!")
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -45,6 +45,9 @@ func NewGame() *Game {
 		// ecs.System{
 		// 	Update: orbSpawner.Update,
 		// },
+		ecs.System{
+			Update: system.Input.Update,
+		},
 		ecs.System{
 			Layer: layers.LayerOrbs,
 			Draw:  system.Render.Draw,
