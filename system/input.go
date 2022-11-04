@@ -16,6 +16,10 @@ type orbChain struct {
 	energyType component.EnergyType
 }
 
+func (o *orbChain) IsSecondToLast(entry *donburi.Entry) bool {
+	return len(o.orbs) > 1 && o.orbs[len(o.orbs)-2] == entry
+}
+
 func (o *orbChain) Add(entry *donburi.Entry) bool {
 	if o.contains(entry) {
 		return false
@@ -37,6 +41,14 @@ func (o *orbChain) Add(entry *donburi.Entry) bool {
 
 func (o *orbChain) CanBeMerged() bool {
 	return len(o.orbs) >= 3
+}
+
+func (o *orbChain) Pop() *donburi.Entry {
+	// Return the last orb in the chain and remove it from the chain
+	i := len(o.orbs) - 1
+	orb := o.orbs[i]
+	o.orbs = o.orbs[:i]
+	return orb
 }
 
 func (o *orbChain) contains(entry *donburi.Entry) bool {
@@ -104,6 +116,10 @@ func (r *input) Update(ecs *ecs.ECS) {
 				if r.chain.Add(entry) {
 					selectable := component.GetSelectable(entry)
 					selectable.Selected = true
+				} else if r.chain.IsSecondToLast(entry) {
+					popped := r.chain.Pop()
+					selectable := component.GetSelectable(popped)
+					selectable.Selected = false
 				}
 			}
 		})
