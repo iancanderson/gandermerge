@@ -119,6 +119,9 @@ func (r *input) createOrbChain(entry *donburi.Entry) *orbChain {
 }
 
 func (r *input) clearOrbChain(world donburi.World) {
+	if r.chain == nil {
+		return
+	}
 	for _, orb := range r.chain.orbs {
 		if r.chain.CanBeMerged() {
 			world.Remove(orb.Entity())
