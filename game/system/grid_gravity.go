@@ -55,7 +55,7 @@ func (g *gridGravity) animateToGridPositions(ecs *ecs.ECS) {
 		sprite := component.GetSprite(entry)
 		gridPosition := component.GetGridPosition(entry)
 
-		if sprite.Y < float64(gridPosition.Row)*config.RowHeight {
+		if sprite.Y < util.GridYPosition(gridPosition.Row) {
 			sprite.Y += 8
 		}
 	})

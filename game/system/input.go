@@ -51,6 +51,10 @@ func (o *orbChain) Pop() *donburi.Entry {
 	return orb
 }
 
+func (o *orbChain) Len() int {
+	return len(o.orbs)
+}
+
 func (o *orbChain) contains(entry *donburi.Entry) bool {
 	for _, orb := range o.orbs {
 		if orb == entry {
@@ -61,8 +65,9 @@ func (o *orbChain) contains(entry *donburi.Entry) bool {
 }
 
 type input struct {
-	selectableQuery *query.Query
 	chain           *orbChain
+	scoreQuery      *query.Query
+	selectableQuery *query.Query
 }
 
 var Input = &input{
@@ -72,6 +77,11 @@ var Input = &input{
 			component.Energy,
 			component.Selectable,
 			component.Sprite,
+		)),
+	scoreQuery: ecs.NewQuery(
+		layers.LayerScoreboard,
+		filter.Contains(
+			component.Score,
 		)),
 }
 
@@ -138,6 +148,17 @@ func (r *input) clearOrbChain(world donburi.World) {
 	if r.chain == nil {
 		return
 	}
+
+	if r.chain.CanBeMerged() {
+		energyEmitted := r.chain.Len()
+		entry, ok := r.scoreQuery.FirstEntity(world)
+		if ok {
+			score := component.GetScore(entry)
+			score.TotalEnergyGoal -= energyEmitted
+			score.MovesRemaining--
+		}
+	}
+
 	for _, orb := range r.chain.orbs {
 		if r.chain.CanBeMerged() {
 			world.Remove(orb.Entity())

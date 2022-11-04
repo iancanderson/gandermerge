@@ -15,7 +15,7 @@ import (
 	"github.com/yohamta/donburi/ecs"
 )
 
-const spawnYOffset = 150
+const spawnYOffset = -150
 
 type OrbSpawner struct {
 	images map[component.EnergyType]*ebiten.Image
@@ -68,7 +68,7 @@ func (s *OrbSpawner) spawnOrb(ecs *ecs.ECS, col, row int) {
 		component.SpriteData{
 			Image: s.images[energyType],
 			X:     float64(col) * config.ColumnWidth,
-			Y:     float64(row)*config.RowHeight - spawnYOffset,
+			Y:     util.GridYPosition(row) + spawnYOffset,
 			Scale: 0.25,
 		})
 

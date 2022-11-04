@@ -5,5 +5,6 @@ import "github.com/yohamta/donburi/ecs"
 const (
 	LayerBackground ecs.LayerID = iota
 	LayerOrbs
+	LayerScoreboard
 	LayerMetrics
 )

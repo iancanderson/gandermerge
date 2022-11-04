@@ -2,14 +2,12 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/iancanderson/gandermerge/game/system"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 )
-
-const WindowHeight = 384
-const WindowWidth = 384
 
 type Game struct {
 	ecs *ecs.ECS
@@ -25,10 +23,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.ecs.DrawLayer(layers.LayerBackground, screen)
 	g.ecs.DrawLayer(layers.LayerOrbs, screen)
 	g.ecs.DrawLayer(layers.LayerMetrics, screen)
+	g.ecs.DrawLayer(layers.LayerScoreboard, screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return WindowWidth, WindowHeight
+	return config.WindowWidth, config.WindowHeight
 }
 
 func NewGame() *Game {
@@ -37,6 +36,9 @@ func NewGame() *Game {
 	}
 	orbSpawner := system.NewOrbSpawner()
 	orbSpawner.Startup(g.ecs)
+
+	scorer := system.Scorer
+	scorer.Startup(g.ecs)
 
 	g.ecs.AddSystems(
 		ecs.System{
@@ -51,6 +53,10 @@ func NewGame() *Game {
 		ecs.System{
 			Layer: layers.LayerOrbs,
 			Draw:  system.Render.Draw,
+		},
+		ecs.System{
+			Layer: layers.LayerScoreboard,
+			Draw:  system.Scoreboard.Draw,
 		},
 	)
 	return g

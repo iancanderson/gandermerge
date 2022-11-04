@@ -35,3 +35,7 @@ func buildQuery() *query.Query {
 			component.Sprite,
 		))
 }
+
+func GridYPosition(row int) float64 {
+	return float64(row)*config.RowHeight + config.OrbGridTopMargin
+}
