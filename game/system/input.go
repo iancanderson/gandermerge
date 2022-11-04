@@ -1,10 +1,9 @@
 package system
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/layers"
+	"github.com/iancanderson/gandermerge/game/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/filter"
@@ -66,6 +65,7 @@ func (o *orbChain) contains(entry *donburi.Entry) bool {
 
 type input struct {
 	chain           *orbChain
+	inputSource     util.InputSource
 	scoreQuery      *query.Query
 	selectableQuery *query.Query
 }
@@ -85,18 +85,6 @@ var Input = &input{
 		)),
 }
 
-//TODO: see example for input system: https://github.com/hajimehoshi/ebiten/blob/main/examples/drag/main.go
-
-type InputSource interface {
-	Position() (int, int)
-}
-
-type MouseInputSource struct{}
-
-func (m *MouseInputSource) Position() (int, int) {
-	return ebiten.CursorPosition()
-}
-
 func (r *input) Update(ecs *ecs.ECS) {
 	// Check if game is over
 	score, ok := r.scoreQuery.FirstEntity(ecs.World)
@@ -104,30 +92,21 @@ func (r *input) Update(ecs *ecs.ECS) {
 		return
 	}
 
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		inputSource := MouseInputSource{}
-
-		r.selectableQuery.EachEntity(ecs.World, func(entry *donburi.Entry) {
-			sprite := component.GetSprite(entry)
-			inputX, inputY := inputSource.Position()
-			if sprite.In(inputX, inputY) {
-				r.chain = r.createOrbChain(entry)
-				selectable := component.GetSelectable(entry)
-				selectable.Selected = true
-			}
-		})
+	if r.chain == nil {
+		r.inputSource = util.JustPressedInputSource()
+		if r.inputSource != nil {
+			r.handleInputPressed(ecs)
+		}
 	}
 
-	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+	if r.inputSource != nil && r.inputSource.JustReleased() {
 		r.clearOrbChain(ecs.World)
 	}
 
 	if r.chain != nil {
-		inputSource := MouseInputSource{}
-
 		r.selectableQuery.EachEntity(ecs.World, func(entry *donburi.Entry) {
 			sprite := component.GetSprite(entry)
-			inputX, inputY := inputSource.Position()
+			inputX, inputY := r.inputSource.Position()
 			if sprite.In(inputX, inputY) {
 				if r.chain.Add(entry) {
 					selectable := component.GetSelectable(entry)
@@ -140,6 +119,18 @@ func (r *input) Update(ecs *ecs.ECS) {
 			}
 		})
 	}
+}
+
+func (r *input) handleInputPressed(ecs *ecs.ECS) {
+	r.selectableQuery.EachEntity(ecs.World, func(entry *donburi.Entry) {
+		sprite := component.GetSprite(entry)
+		inputX, inputY := r.inputSource.Position()
+		if sprite.In(inputX, inputY) {
+			r.chain = r.createOrbChain(entry)
+			selectable := component.GetSelectable(entry)
+			selectable.Selected = true
+		}
+	})
 }
 
 func (r *input) createOrbChain(entry *donburi.Entry) *orbChain {

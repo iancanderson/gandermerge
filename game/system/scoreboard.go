@@ -6,11 +6,11 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/layers"
+	"github.com/iancanderson/gandermerge/game/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/filter"
@@ -19,6 +19,7 @@ import (
 )
 
 type scoreboard struct {
+	inputSource      util.InputSource
 	scoreQuery       *query.Query
 	playButtonQuery  *query.Query
 	playAgainPressed bool
@@ -52,7 +53,9 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
 	if score.Won() {
 		text.Draw(screen, "You Win!", inconsolata.Bold8x16, 20, 50, color.RGBA{0x00, 0xff, 0x00, 0xff})
-
+		s.drawPlayAgainButton(ecs, screen)
+	} else if score.Lost() {
+		text.Draw(screen, "You Lost!", inconsolata.Bold8x16, 20, 50, color.RGBA{0xff, 0x00, 0x00, 0xff})
 		s.drawPlayAgainButton(ecs, screen)
 	} else {
 		energyToWin := fmt.Sprintf("Energy to Win: %d", score.EnergyToWin)
@@ -67,21 +70,24 @@ func (s *scoreboard) Update(ecs *ecs.ECS) {
 	}
 
 	score := component.GetScore(scoreEntry)
-	if score.Won() {
+	if score.Won() || score.Lost() {
 		playButton := s.findOrSpawnPlayAgainButton(ecs)
 		buttonSprite := component.GetSprite(playButton)
 
-		inputSource := MouseInputSource{}
-		inputX, inputY := inputSource.Position()
-		if buttonSprite.In(inputX, inputY) {
-			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if s.inputSource == nil {
+			s.inputSource = util.JustPressedInputSource()
+		}
+		if s.inputSource != nil {
+			inputX, inputY := s.inputSource.Position()
+			if buttonSprite.In(inputX, inputY) {
 				s.playAgainPressed = true
 			}
-		}
 
-		if s.playAgainPressed && inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-			s.playAgainPressed = false
-			score.NewGame()
+			if s.playAgainPressed && s.inputSource.JustReleased() {
+				s.playAgainPressed = false
+				s.inputSource = nil
+				score.NewGame()
+			}
 		}
 	}
 }

@@ -18,6 +18,10 @@ func (s *ScoreData) Won() bool {
 	return s.EnergyToWin <= 0
 }
 
+func (s *ScoreData) Lost() bool {
+	return s.MovesRemaining <= 0
+}
+
 func (s *ScoreData) NewGame() {
 	s.MovesRemaining = config.MovesAllowed
 	s.EnergyToWin = config.EnergyToWin

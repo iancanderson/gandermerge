@@ -1,0 +1,10 @@
+framework module "Gandermergemobile" {
+    header "Ebitenmobileview.objc.h"
+    header "Gandermerge.h"
+    header "Gandermergemobile.objc.h"
+    header "GandermergemobileEbitenViewController.h"
+    header "Universe.objc.h"
+    header "ref.h"
+
+    export *
+}
