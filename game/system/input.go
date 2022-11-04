@@ -3,8 +3,8 @@ package system
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/iancanderson/gandermerge/component"
-	"github.com/iancanderson/gandermerge/layers"
+	"github.com/iancanderson/gandermerge/game/component"
+	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/filter"

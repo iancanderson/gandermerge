@@ -1,10 +1,10 @@
 package system
 
 import (
-	"github.com/iancanderson/gandermerge/component"
-	"github.com/iancanderson/gandermerge/config"
-	"github.com/iancanderson/gandermerge/layers"
-	"github.com/iancanderson/gandermerge/util"
+	"github.com/iancanderson/gandermerge/game/component"
+	"github.com/iancanderson/gandermerge/game/config"
+	"github.com/iancanderson/gandermerge/game/layers"
+	"github.com/iancanderson/gandermerge/game/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/filter"
