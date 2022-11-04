@@ -98,6 +98,12 @@ func (m *MouseInputSource) Position() (int, int) {
 }
 
 func (r *input) Update(ecs *ecs.ECS) {
+	// Check if game is over
+	score, ok := r.scoreQuery.FirstEntity(ecs.World)
+	if ok && component.GetScore(score).IsGameOver() {
+		return
+	}
+
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		inputSource := MouseInputSource{}
 
@@ -154,7 +160,7 @@ func (r *input) clearOrbChain(world donburi.World) {
 		entry, ok := r.scoreQuery.FirstEntity(world)
 		if ok {
 			score := component.GetScore(entry)
-			score.TotalEnergyGoal -= energyEmitted
+			score.EnergyToWin -= energyEmitted
 			score.MovesRemaining--
 		}
 	}

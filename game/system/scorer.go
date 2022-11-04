@@ -2,6 +2,7 @@ package system
 
 import (
 	"github.com/iancanderson/gandermerge/game/component"
+	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
@@ -17,7 +18,7 @@ func (s *scorer) Startup(ecs *ecs.ECS) {
 	entry := ecs.World.Entry(entity)
 
 	donburi.SetValue(entry, component.Score, component.ScoreData{
-		MovesRemaining:  20,
-		TotalEnergyGoal: 100,
+		MovesRemaining: config.MovesAllowed,
+		EnergyToWin:    config.EnergyToWin,
 	})
 }

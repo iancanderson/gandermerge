@@ -55,8 +55,9 @@ func NewGame() *Game {
 			Draw:  system.Render.Draw,
 		},
 		ecs.System{
-			Layer: layers.LayerScoreboard,
-			Draw:  system.Scoreboard.Draw,
+			Layer:  layers.LayerScoreboard,
+			Draw:   system.Scoreboard.Draw,
+			Update: system.Scoreboard.Update,
 		},
 	)
 	return g
