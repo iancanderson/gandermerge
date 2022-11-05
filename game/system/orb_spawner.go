@@ -71,6 +71,7 @@ func (s *OrbSpawner) spawnOrb(ecs *ecs.ECS, col, row int) {
 			Y:         util.GridYPosition(row) + spawnYOffset,
 			Scale:     0.07,
 			GreenTint: energyType == component.Poison,
+			RedTint:   energyType == component.Fire,
 		})
 
 	donburi.SetValue(entry, component.GridPosition,

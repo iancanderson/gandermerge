@@ -13,6 +13,7 @@ type SpriteData struct {
 	X, Y      float64
 	Scale     float64
 	GreenTint bool
+	RedTint   bool
 }
 
 var Sprite = donburi.NewComponentType[SpriteData]()
