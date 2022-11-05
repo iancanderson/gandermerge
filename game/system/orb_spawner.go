@@ -66,10 +66,11 @@ func (s *OrbSpawner) spawnOrb(ecs *ecs.ECS, col, row int) {
 
 	donburi.SetValue(entry, component.Sprite,
 		component.SpriteData{
-			Image: s.images[energyType],
-			X:     float64(col) * config.ColumnWidth,
-			Y:     util.GridYPosition(row) + spawnYOffset,
-			Scale: 0.25,
+			Image:     s.images[energyType],
+			X:         float64(col) * config.ColumnWidth,
+			Y:         util.GridYPosition(row) + spawnYOffset,
+			Scale:     0.25,
+			GreenTint: energyType == component.Poison,
 		})
 
 	donburi.SetValue(entry, component.GridPosition,

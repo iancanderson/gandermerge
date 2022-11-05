@@ -36,6 +36,9 @@ func (r *render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		if selectable.Selected {
 			op.ColorM.Scale(0.5, 0.5, 0.5, 1)
 		}
+		if sprite.GreenTint {
+			op.ColorM.Scale(0.5, 1.0, 0.5, 1)
+		}
 
 		screen.DrawImage(sprite.Image, op)
 	})
