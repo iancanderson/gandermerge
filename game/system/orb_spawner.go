@@ -69,7 +69,7 @@ func (s *OrbSpawner) spawnOrb(ecs *ecs.ECS, col, row int) {
 			Image:     s.images[energyType],
 			X:         float64(col) * config.ColumnWidth,
 			Y:         util.GridYPosition(row) + spawnYOffset,
-			Scale:     0.25,
+			Scale:     0.07,
 			GreenTint: energyType == component.Poison,
 		})
 
