@@ -2,10 +2,10 @@ package config
 
 const Columns = 8
 const Rows = 8
-const ColumnWidth = 48
-const RowHeight = 48
-const WindowHeight = 500
-const WindowWidth = 384
+const ColumnWidth = 96
+const RowHeight = 96
+const WindowHeight = 1000
+const WindowWidth = 768
 const OrbGridTopMargin = WindowHeight - (Rows * RowHeight)
 const MovesAllowed = 20
 const EnergyToWin = 100

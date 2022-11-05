@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 
+	"github.com/golang/freetype/truetype"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
@@ -15,7 +16,8 @@ import (
 	"github.com/yohamta/donburi/ecs"
 	"github.com/yohamta/donburi/filter"
 	"github.com/yohamta/donburi/query"
-	"golang.org/x/image/font/inconsolata"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/goregular"
 )
 
 type scoreboard struct {
@@ -23,10 +25,11 @@ type scoreboard struct {
 	scoreQuery       *query.Query
 	playButtonQuery  *query.Query
 	playAgainPressed bool
+	fontface         font.Face
 }
 
-const buttonHeight = 30.0
-const buttonWidth = 100.0
+const buttonHeight = 60.0
+const buttonWidth = 200.0
 
 var Scoreboard = &scoreboard{
 	playAgainPressed: false,
@@ -41,6 +44,14 @@ var Scoreboard = &scoreboard{
 		)),
 }
 
+func (s *scoreboard) Startup(ecs *ecs.ECS) {
+	goreg, err := truetype.Parse(goregular.TTF)
+	if err != nil {
+		panic(err)
+	}
+	s.fontface = truetype.NewFace(goreg, &truetype.Options{Size: 36})
+}
+
 func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	scoreEntry, ok := s.scoreQuery.FirstEntity(ecs.World)
 	if !ok {
@@ -49,17 +60,18 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
 	score := component.GetScore(scoreEntry)
 	moves := fmt.Sprintf("Moves Remaining: %d", score.MovesRemaining)
-	text.Draw(screen, moves, inconsolata.Bold8x16, 20, 30, color.White)
+
+	text.Draw(screen, moves, s.fontface, 40, 60, color.White)
 
 	if score.Won() {
-		text.Draw(screen, "You Win!", inconsolata.Bold8x16, 20, 50, color.RGBA{0x00, 0xff, 0x00, 0xff})
+		text.Draw(screen, "You Win!", s.fontface, 40, 100, color.RGBA{0x00, 0xff, 0x00, 0xff})
 		s.drawPlayAgainButton(ecs, screen)
 	} else if score.Lost() {
-		text.Draw(screen, "You Lost!", inconsolata.Bold8x16, 20, 50, color.RGBA{0xff, 0x00, 0x00, 0xff})
+		text.Draw(screen, "You Lost!", s.fontface, 40, 100, color.RGBA{0xff, 0x00, 0x00, 0xff})
 		s.drawPlayAgainButton(ecs, screen)
 	} else {
 		energyToWin := fmt.Sprintf("Energy to Win: %d", score.EnergyToWin)
-		text.Draw(screen, energyToWin, inconsolata.Bold8x16, 20, 50, color.White)
+		text.Draw(screen, energyToWin, s.fontface, 40, 100, color.White)
 	}
 }
 
@@ -107,7 +119,7 @@ func spawnPlayAgainButton(ecs *ecs.ECS) *donburi.Entry {
 	donburi.SetValue(entry, component.Sprite, component.SpriteData{
 		Image: ebiten.NewImage(buttonWidth, buttonHeight),
 		X:     config.WindowWidth/2 - buttonWidth/2,
-		Y:     60,
+		Y:     120,
 		Scale: 1.0,
 	})
 	return entry
@@ -120,7 +132,7 @@ func (s *scoreboard) drawPlayAgainButton(ecs *ecs.ECS, screen *ebiten.Image) {
 	}
 	sprite := component.GetSprite(playButtonEntry)
 	ebitenutil.DrawRect(sprite.Image, 0, 0, buttonWidth, buttonHeight, color.RGBA{0x00, 0xff, 0x00, 0xff})
-	text.Draw(sprite.Image, "Play Again", inconsolata.Bold8x16, 10, 20, color.Black)
+	text.Draw(sprite.Image, "Play Again", s.fontface, 10, 40, color.Black)
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(sprite.Scale, sprite.Scale)

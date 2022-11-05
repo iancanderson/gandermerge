@@ -40,6 +40,8 @@ func NewGame() *Game {
 	scorer := system.Scorer
 	scorer.Startup(g.ecs)
 
+	system.Scoreboard.Startup(g.ecs)
+
 	g.ecs.AddSystems(
 		ecs.System{
 			Update: system.Input.Update,
