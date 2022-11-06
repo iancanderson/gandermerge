@@ -57,6 +57,9 @@ func NewGame() *Game {
 			Draw:  system.Render.Draw,
 		},
 		ecs.System{
+			Update: system.Projectile.Update,
+		},
+		ecs.System{
 			Layer:  layers.LayerEnemy,
 			Update: system.Enemy.Update,
 			Draw:   system.Enemy.Draw,

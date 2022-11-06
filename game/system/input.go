@@ -2,6 +2,7 @@ package system
 
 import (
 	"github.com/iancanderson/gandermerge/game/component"
+	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/iancanderson/gandermerge/game/util"
 	"github.com/yohamta/donburi"
@@ -77,6 +78,7 @@ var Input = &input{
 			component.Energy,
 			component.Selectable,
 			component.Sprite,
+			component.GridPosition,
 		)),
 	scoreQuery: ecs.NewQuery(
 		layers.LayerScoreboard,
@@ -154,15 +156,24 @@ func (r *input) clearOrbChain(world donburi.World) {
 			score.EnergyToWin -= energyEmitted
 			score.MovesRemaining--
 		}
-	}
 
-	for _, orb := range r.chain.orbs {
-		if r.chain.CanBeMerged() {
-			world.Remove(orb.Entity())
-		} else {
+		for _, orb := range r.chain.orbs {
+			donburi.Add(orb, component.Projectile,
+				&component.ProjectileData{
+					DestX: config.WindowWidth/2 - config.ColumnWidth/2,
+					DestY: 250,
+				})
+			donburi.Remove(orb, component.GridPosition)
+
+			//TODO: remove them after they reach the enemy
+			// world.Remove(orb.Entity())
+		}
+	} else {
+		for _, orb := range r.chain.orbs {
 			selectable := component.GetSelectable(orb)
 			selectable.Selected = false
 		}
 	}
+
 	r.chain = nil
 }
