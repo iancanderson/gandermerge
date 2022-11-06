@@ -163,7 +163,7 @@ func (r *input) clearOrbChain(world donburi.World) {
 					DestX: config.WindowWidth/2 - config.ColumnWidth/2,
 					DestY: 250,
 				})
-			donburi.Remove(orb, component.GridPosition)
+			orb.RemoveComponent(component.GridPosition)
 
 			//TODO: remove them after they reach the enemy
 			// world.Remove(orb.Entity())

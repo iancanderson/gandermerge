@@ -42,34 +42,16 @@ func NewGame() *Game {
 	system.Scoreboard.Startup(g.ecs)
 	system.Enemy.Startup(g.ecs)
 
-	g.ecs.AddSystems(
-		ecs.System{
-			Update: system.Input.Update,
-		},
-		ecs.System{
-			Update: system.GridGravity.Update,
-		},
-		ecs.System{
-			Update: orbSpawner.Update,
-		},
-		ecs.System{
-			Layer: layers.LayerOrbs,
-			Draw:  system.Render.Draw,
-		},
-		ecs.System{
-			Update: system.Projectile.Update,
-		},
-		ecs.System{
-			Layer:  layers.LayerEnemy,
-			Update: system.Enemy.Update,
-			Draw:   system.Enemy.Draw,
-		},
-		ecs.System{
-			Layer:  layers.LayerScoreboard,
-			Draw:   system.Scoreboard.Draw,
-			Update: system.Scoreboard.Update,
-		},
-	)
+	g.ecs.AddSystem(system.Input.Update)
+	g.ecs.AddSystem(system.GridGravity.Update)
+	g.ecs.AddSystem(orbSpawner.Update)
+	g.ecs.AddRenderer(layers.LayerOrbs, system.Render.Draw)
+	g.ecs.AddSystem(system.Projectile.Update)
+	g.ecs.AddSystem(system.Enemy.Update)
+	g.ecs.AddRenderer(layers.LayerEnemy, system.Enemy.Draw)
+	g.ecs.AddSystem(system.Scoreboard.Update)
+	g.ecs.AddRenderer(layers.LayerScoreboard, system.Scoreboard.Draw)
+
 	return g
 }
 
