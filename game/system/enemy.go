@@ -47,6 +47,7 @@ type hitpointsBar struct {
 	width  int
 	height int
 	y      int
+	hide   bool
 }
 
 var HitpointsBar = hitpointsBar{
@@ -54,6 +55,7 @@ var HitpointsBar = hitpointsBar{
 	height: 20,
 	width:  100,
 	y:      400,
+	hide:   false,
 	query: ecs.NewQuery(
 		layers.LayerScoreboard,
 		filter.Contains(
@@ -71,6 +73,10 @@ func (h *hitpointsBar) Update(ecs *ecs.ECS) {
 }
 
 func (h *hitpointsBar) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
+	if h.hide {
+		return
+	}
+
 	// outer rectangle
 	ebitenutil.DrawRect(
 		screen,
@@ -138,10 +144,11 @@ func (e *enemy) Update(ecs *ecs.ECS) {
 	}
 	score := component.GetScore(scoreEntry)
 	if score.Won() {
-		//TODO: how to respawn the enemy?
 		e.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
 			ecs.World.Remove(entry.Entity())
 		})
+
+		HitpointsBar.hide = true
 	}
 }
 
