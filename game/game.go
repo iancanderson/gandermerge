@@ -20,10 +20,9 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Clear()
-	g.ecs.DrawLayer(layers.LayerBackground, screen)
-	g.ecs.DrawLayer(layers.LayerOrbs, screen)
-	g.ecs.DrawLayer(layers.LayerMetrics, screen)
-	g.ecs.DrawLayer(layers.LayerScoreboard, screen)
+	for layer := layers.LayerBackground; layer <= layers.LayerMetrics; layer++ {
+		g.ecs.DrawLayer(layer, screen)
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -41,6 +40,7 @@ func NewGame() *Game {
 	scorer.Startup(g.ecs)
 
 	system.Scoreboard.Startup(g.ecs)
+	system.Enemy.Startup(g.ecs)
 
 	g.ecs.AddSystems(
 		ecs.System{
@@ -55,6 +55,11 @@ func NewGame() *Game {
 		ecs.System{
 			Layer: layers.LayerOrbs,
 			Draw:  system.Render.Draw,
+		},
+		ecs.System{
+			Layer:  layers.LayerEnemy,
+			Update: system.Enemy.Update,
+			Draw:   system.Enemy.Draw,
 		},
 		ecs.System{
 			Layer:  layers.LayerScoreboard,
