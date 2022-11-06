@@ -120,8 +120,7 @@ func spawnPlayAgainButton(ecs *ecs.ECS) *donburi.Entry {
 		Image: ebiten.NewImage(buttonWidth, buttonHeight),
 		X:     config.WindowWidth/2 - buttonWidth/2,
 		Y:     120,
-		Scale: 1.0,
-	})
+	}.WithScale(1.0))
 	return entry
 }
 
@@ -134,9 +133,6 @@ func (s *scoreboard) drawPlayAgainButton(ecs *ecs.ECS, screen *ebiten.Image) {
 	ebitenutil.DrawRect(sprite.Image, 0, 0, buttonWidth, buttonHeight, color.RGBA{0x00, 0xff, 0x00, 0xff})
 	text.Draw(sprite.Image, "Play Again", s.fontface, 10, 40, color.Black)
 
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Scale(sprite.Scale, sprite.Scale)
-	op.GeoM.Translate(sprite.X+4, sprite.Y+4)
-
+	op := sprite.DrawOptions()
 	screen.DrawImage(sprite.Image, op)
 }

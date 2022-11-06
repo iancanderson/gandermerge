@@ -28,18 +28,9 @@ func (r *render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	r.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
 		sprite := component.GetSprite(entry)
 		selectable := component.GetSelectable(entry)
-
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(sprite.Scale, sprite.Scale)
-		op.GeoM.Translate(sprite.X+4, sprite.Y+4)
-		op.Filter = ebiten.FilterLinear
+		op := sprite.DrawOptions()
 		if selectable.Selected {
 			op.ColorM.Scale(0.5, 0.5, 0.5, 1)
-		}
-		if sprite.GreenTint {
-			op.ColorM.Scale(0.5, 1.0, 0.5, 1)
-		} else if sprite.RedTint {
-			op.ColorM.Scale(1.0, 0.5, 0.5, 1)
 		}
 
 		screen.DrawImage(sprite.Image, op)

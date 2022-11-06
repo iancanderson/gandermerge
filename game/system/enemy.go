@@ -45,13 +45,10 @@ func (e *enemy) Startup(ecs *ecs.ECS) {
 
 	donburi.SetValue(entry, component.Sprite,
 		component.SpriteData{
-			Image:     e.images[energyType],
-			X:         config.WindowWidth/2 - enemyWidth/2,
-			Y:         100,
-			Scale:     0.5,
-			GreenTint: energyType == component.Poison,
-			RedTint:   energyType == component.Fire,
-		})
+			Image: e.images[energyType],
+			X:     config.WindowWidth/2 - enemyWidth/2,
+			Y:     100,
+		}.WithScale(0.5).WithGreenTint(energyType == component.Poison).WithRedTint(energyType == component.Fire))
 }
 
 func (e *enemy) Update(ecs *ecs.ECS) {
@@ -61,17 +58,7 @@ func (e *enemy) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	// TODO: consolidate with render.go
 	e.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
 		sprite := component.GetSprite(entry)
-
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(sprite.Scale, sprite.Scale)
-		op.GeoM.Translate(sprite.X, sprite.Y)
-		op.Filter = ebiten.FilterLinear
-		if sprite.GreenTint {
-			op.ColorM.Scale(0.5, 1.0, 0.5, 1)
-		} else if sprite.RedTint {
-			op.ColorM.Scale(1.0, 0.5, 0.5, 1)
-		}
-
+		op := sprite.DrawOptions()
 		screen.DrawImage(sprite.Image, op)
 	})
 }

@@ -11,9 +11,9 @@ import (
 type SpriteData struct {
 	Image     *ebiten.Image
 	X, Y      float64
-	Scale     float64
-	GreenTint bool
-	RedTint   bool
+	scale     float64
+	greenTint bool
+	redTint   bool
 }
 
 var Sprite = donburi.NewComponentType[SpriteData]()
@@ -33,10 +33,38 @@ func (s *SpriteData) In(x, y int) bool {
 	return imagePt.In(s.Image.Bounds())
 }
 
+func (s *SpriteData) DrawOptions() *ebiten.DrawImageOptions {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(s.scale, s.scale)
+	op.GeoM.Translate(s.X, s.Y)
+	op.Filter = ebiten.FilterLinear
+	if s.greenTint {
+		op.ColorM.Scale(0.5, 1.0, 0.5, 1)
+	} else if s.redTint {
+		op.ColorM.Scale(1.0, 0.5, 0.5, 1)
+	}
+	return op
+}
+
 func (s *SpriteData) worldToImage(x, y int) image.Point {
-	imageX := (float64(x) - s.X) / s.Scale
-	imageY := (float64(y) - s.Y) / s.Scale
+	imageX := (float64(x) - s.X) / s.scale
+	imageY := (float64(y) - s.Y) / s.scale
 	return image.Point{X: int(imageX), Y: int(imageY)}
+}
+
+func (s SpriteData) WithScale(scale float64) SpriteData {
+	s.scale = scale
+	return s
+}
+
+func (s SpriteData) WithGreenTint(greenTint bool) SpriteData {
+	s.greenTint = greenTint
+	return s
+}
+
+func (s SpriteData) WithRedTint(redTint bool) SpriteData {
+	s.redTint = redTint
+	return s
 }
 
 func GetSprite(entry *donburi.Entry) *SpriteData {
