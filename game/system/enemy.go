@@ -17,6 +17,7 @@ import (
 type enemy struct {
 	images       map[component.EnergyType]*ebiten.Image
 	query        *query.Query
+	scoreQuery   *query.Query
 	hitpointsBar hitpointsBar
 }
 
@@ -29,6 +30,11 @@ var Enemy = &enemy{
 		layers.LayerEnemy,
 		filter.Contains(
 			component.Sprite,
+		)),
+	scoreQuery: ecs.NewQuery(
+		layers.LayerScoreboard,
+		filter.Contains(
+			component.Score,
 		)),
 }
 
@@ -125,6 +131,18 @@ func (e *enemy) Startup(ecs *ecs.ECS) {
 
 func (e *enemy) Update(ecs *ecs.ECS) {
 	HitpointsBar.Update(ecs)
+
+	scoreEntry, ok := e.scoreQuery.FirstEntity(ecs.World)
+	if !ok {
+		return
+	}
+	score := component.GetScore(scoreEntry)
+	if score.Won() {
+		//TODO: how to respawn the enemy?
+		e.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
+			ecs.World.Remove(entry.Entity())
+		})
+	}
 }
 
 func (e *enemy) Draw(ecs *ecs.ECS, screen *ebiten.Image) {

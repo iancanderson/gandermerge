@@ -1,6 +1,8 @@
 package system
 
 import (
+	"math"
+
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/yohamta/donburi"
@@ -41,6 +43,11 @@ func (p *projectile) Update(ecs *ecs.ECS) {
 			sprite.Y += projectileVelocity
 		} else {
 			sprite.Y -= projectileVelocity
+		}
+
+		if math.Abs(sprite.X-projectile.DestX) < projectileVelocity &&
+			math.Abs(sprite.Y-projectile.DestY) < projectileVelocity {
+			ecs.World.Remove(entry.Entity())
 		}
 	})
 }
