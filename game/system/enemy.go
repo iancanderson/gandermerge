@@ -1,7 +1,10 @@
 package system
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/layers"
@@ -12,11 +15,16 @@ import (
 )
 
 type enemy struct {
-	images map[component.EnergyType]*ebiten.Image
-	query  *query.Query
+	images       map[component.EnergyType]*ebiten.Image
+	query        *query.Query
+	hitpointsBar hitpointsBar
 }
 
 var Enemy = &enemy{
+	hitpointsBar: hitpointsBar{
+		hpMax: config.EnergyToWin,
+		hp:    config.EnergyToWin,
+	},
 	query: ecs.NewQuery(
 		layers.LayerEnemy,
 		filter.Contains(
@@ -25,6 +33,70 @@ var Enemy = &enemy{
 }
 
 const enemyWidth = 309
+
+type hitpointsBar struct {
+	hpMax  int
+	hp     int
+	query  *query.Query
+	width  int
+	height int
+	y      int
+}
+
+var HitpointsBar = hitpointsBar{
+	hpMax:  config.EnergyToWin,
+	height: 20,
+	width:  100,
+	y:      400,
+	query: ecs.NewQuery(
+		layers.LayerScoreboard,
+		filter.Contains(
+			component.Score,
+		)),
+}
+
+func (h *hitpointsBar) Update(ecs *ecs.ECS) {
+	scoreEntry, ok := h.query.FirstEntity(ecs.World)
+	if !ok {
+		return
+	}
+	score := component.GetScore(scoreEntry)
+	h.hp = score.EnergyToWin
+}
+
+func (h *hitpointsBar) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
+	// outer rectangle
+	ebitenutil.DrawRect(
+		screen,
+		config.WindowWidth/2-float64(h.width/2),
+		float64(h.y),
+		float64(h.width),
+		float64(h.height),
+		color.RGBA{0x00, 0xff, 0x00, 0xff},
+	)
+
+	widthScale := float64(h.hp) / float64(h.hpMax)
+	innerX := config.WindowWidth/2 - float64(h.width/2) + 2
+	innerWidth := float64(h.width) - 4
+	progressWidth := widthScale * innerWidth
+	ebitenutil.DrawRect(
+		screen,
+		innerX,
+		float64(h.y+2),
+		progressWidth,
+		float64(h.height-4),
+		color.RGBA{0xff, 0x00, 0x00, 0xff},
+	)
+
+	ebitenutil.DrawRect(
+		screen,
+		progressWidth+innerX,
+		float64(h.y+2),
+		innerWidth-progressWidth,
+		float64(h.height-4),
+		color.Black,
+	)
+}
 
 func (e *enemy) Startup(ecs *ecs.ECS) {
 	//TODO: share these with orb_spawner?
@@ -52,6 +124,7 @@ func (e *enemy) Startup(ecs *ecs.ECS) {
 }
 
 func (e *enemy) Update(ecs *ecs.ECS) {
+	HitpointsBar.Update(ecs)
 }
 
 func (e *enemy) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
@@ -61,4 +134,6 @@ func (e *enemy) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		op := sprite.DrawOptions()
 		screen.DrawImage(sprite.Image, op)
 	})
+
+	HitpointsBar.Draw(ecs, screen)
 }
