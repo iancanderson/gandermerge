@@ -133,6 +133,8 @@ func (e *enemy) Startup(ecs *ecs.ECS) {
 			X:     config.WindowWidth/2 - enemyWidth/2,
 			Y:     100,
 		}.WithScale(0.5).WithGreenTint(energyType == component.Poison).WithRedTint(energyType == component.Fire))
+
+	HitpointsBar.hide = false
 }
 
 func (e *enemy) Update(ecs *ecs.ECS) {
