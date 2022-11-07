@@ -9,6 +9,7 @@ import (
 	"github.com/iancanderson/gandermerge/game/assets/images"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
+	"github.com/iancanderson/gandermerge/game/core"
 	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/iancanderson/gandermerge/game/util"
 	"github.com/yohamta/donburi"
@@ -18,7 +19,7 @@ import (
 const spawnYOffset = -150
 
 type OrbSpawner struct {
-	images map[component.EnergyType]*ebiten.Image
+	images map[core.EnergyType]*ebiten.Image
 }
 
 func NewOrbSpawner() *OrbSpawner {
@@ -69,7 +70,7 @@ func (s *OrbSpawner) spawnOrb(ecs *ecs.ECS, col, row int) {
 			Image: s.images[energyType],
 			X:     4 + float64(col)*config.ColumnWidth,
 			Y:     4 + util.GridYPosition(row) + spawnYOffset,
-		}.WithScale(0.14).WithGreenTint(energyType == component.Poison).WithRedTint(energyType == component.Fire))
+		}.WithScale(0.14).WithGreenTint(energyType == core.Poison).WithRedTint(energyType == core.Fire))
 
 	donburi.SetValue(entry, component.GridPosition,
 		component.GridPositionData{
@@ -78,13 +79,13 @@ func (s *OrbSpawner) spawnOrb(ecs *ecs.ECS, col, row int) {
 		})
 }
 
-func loadEnergyTypeImages() map[component.EnergyType]*ebiten.Image {
-	return map[component.EnergyType]*ebiten.Image{
-		component.Electric: loadImage(images.Electric_png),
-		component.Fire:     loadImage(images.Fire_png),
-		component.Ghost:    loadImage(images.Ghost_png),
-		component.Poison:   loadImage(images.Poison_png),
-		component.Psychic:  loadImage(images.Psychic_png),
+func loadEnergyTypeImages() map[core.EnergyType]*ebiten.Image {
+	return map[core.EnergyType]*ebiten.Image{
+		core.Electric: loadImage(images.Electric_png),
+		core.Fire:     loadImage(images.Fire_png),
+		core.Ghost:    loadImage(images.Ghost_png),
+		core.Poison:   loadImage(images.Poison_png),
+		core.Psychic:  loadImage(images.Psychic_png),
 	}
 }
 

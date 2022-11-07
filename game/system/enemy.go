@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
+	"github.com/iancanderson/gandermerge/game/core"
 	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
@@ -15,7 +16,7 @@ import (
 )
 
 type enemy struct {
-	images       map[component.EnergyType]*ebiten.Image
+	images       map[core.EnergyType]*ebiten.Image
 	query        *query.Query
 	scoreQuery   *query.Query
 	hitpointsBar hitpointsBar
@@ -69,7 +70,7 @@ func (h *hitpointsBar) Update(ecs *ecs.ECS) {
 		return
 	}
 	score := component.GetScore(scoreEntry)
-	h.hp = score.EnergyToWin
+	h.hp = score.BossHitpoints
 }
 
 func (h *hitpointsBar) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
@@ -132,7 +133,7 @@ func (e *enemy) Startup(ecs *ecs.ECS) {
 			Image: e.images[energyType],
 			X:     config.WindowWidth/2 - enemyWidth/2,
 			Y:     100,
-		}.WithScale(0.5).WithGreenTint(energyType == component.Poison).WithRedTint(energyType == component.Fire))
+		}.WithScale(0.5).WithGreenTint(energyType == core.Poison).WithRedTint(energyType == core.Fire))
 
 	HitpointsBar.hide = false
 }

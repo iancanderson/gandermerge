@@ -8,6 +8,7 @@ import (
 	"github.com/iancanderson/gandermerge/game/assets/sounds"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
+	"github.com/iancanderson/gandermerge/game/core"
 	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/iancanderson/gandermerge/game/util"
 	"github.com/yohamta/donburi"
@@ -18,7 +19,7 @@ import (
 
 type orbChain struct {
 	orbs       []*donburi.Entry
-	energyType component.EnergyType
+	energyType core.EnergyType
 }
 
 func (o *orbChain) IsSecondToLast(entry *donburi.Entry) bool {
@@ -74,8 +75,8 @@ type input struct {
 	inputSource     util.InputSource
 	scoreQuery      *query.Query
 	selectableQuery *query.Query
-	chainSounds     map[component.EnergyType]*audio.Player
-	mergeSounds     map[component.EnergyType]*audio.Player
+	chainSounds     map[core.EnergyType]*audio.Player
+	mergeSounds     map[core.EnergyType]*audio.Player
 }
 
 var Input = &input{
@@ -97,22 +98,22 @@ var Input = &input{
 func (r *input) Startup(ecs *ecs.ECS) {
 	audioContext := audio.NewContext(config.AudioSampleRate)
 
-	chainSoundData := map[component.EnergyType][]byte{
-		component.Poison: sounds.PoisonChain,
-		component.Ghost:  sounds.GhostChain,
+	chainSoundData := map[core.EnergyType][]byte{
+		core.Poison: sounds.PoisonChain,
+		core.Ghost:  sounds.GhostChain,
 	}
 
 	r.chainSounds = loadSounds(chainSoundData, audioContext)
 
-	mergeSoundData := map[component.EnergyType][]byte{
-		component.Poison: sounds.PoisonMerge,
-		component.Ghost:  sounds.GhostMerge,
+	mergeSoundData := map[core.EnergyType][]byte{
+		core.Poison: sounds.PoisonMerge,
+		core.Ghost:  sounds.GhostMerge,
 	}
 	r.mergeSounds = loadSounds(mergeSoundData, audioContext)
 }
 
-func loadSounds(soundData map[component.EnergyType][]byte, audioContext *audio.Context) map[component.EnergyType]*audio.Player {
-	sounds := make(map[component.EnergyType]*audio.Player)
+func loadSounds(soundData map[core.EnergyType][]byte, audioContext *audio.Context) map[core.EnergyType]*audio.Player {
+	sounds := make(map[core.EnergyType]*audio.Player)
 
 	for energyType, data := range soundData {
 		stream, err := wav.DecodeWithSampleRate(config.AudioSampleRate, bytes.NewReader(data))
@@ -210,7 +211,7 @@ func (r *input) clearOrbChain(world donburi.World) {
 		entry, ok := r.scoreQuery.FirstEntity(world)
 		if ok {
 			score := component.GetScore(entry)
-			score.EnergyToWin -= energyEmitted
+			score.BossHitpoints -= energyEmitted
 			score.MovesRemaining--
 		}
 
@@ -221,9 +222,6 @@ func (r *input) clearOrbChain(world donburi.World) {
 					DestY: 250,
 				})
 			orb.RemoveComponent(component.GridPosition)
-
-			//TODO: remove them after they reach the enemy
-			// world.Remove(orb.Entity())
 		}
 	} else {
 		for _, orb := range r.chain.orbs {

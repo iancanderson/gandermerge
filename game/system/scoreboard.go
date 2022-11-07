@@ -70,7 +70,7 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		text.Draw(screen, "You Lost!", s.fontface, 40, 100, color.RGBA{0xff, 0x00, 0x00, 0xff})
 		s.drawPlayAgainButton(ecs, screen)
 	} else {
-		energyToWin := fmt.Sprintf("Energy to Win: %d", score.EnergyToWin)
+		energyToWin := fmt.Sprintf("Boss hitpoints: %d", score.BossHitpoints)
 		text.Draw(screen, energyToWin, s.fontface, 40, 100, color.White)
 	}
 }

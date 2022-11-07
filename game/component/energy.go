@@ -3,25 +3,16 @@ package component
 import (
 	"math/rand"
 
+	"github.com/iancanderson/gandermerge/game/core"
 	"github.com/yohamta/donburi"
 )
 
-type EnergyType int
-
-const (
-	Electric EnergyType = iota
-	Fire
-	Ghost
-	Poison
-	Psychic
-)
-
-func RandomEnergyType() EnergyType {
-	return EnergyType(rand.Intn(int(Psychic) + 1))
+func RandomEnergyType() core.EnergyType {
+	return core.EnergyType(rand.Intn(int(core.Psychic) + 1))
 }
 
 type EnergyData struct {
-	EnergyType EnergyType
+	EnergyType core.EnergyType
 }
 
 var Energy = donburi.NewComponentType[EnergyData]()

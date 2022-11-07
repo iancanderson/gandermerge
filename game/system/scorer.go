@@ -19,6 +19,6 @@ func (s *scorer) Startup(ecs *ecs.ECS) {
 
 	donburi.SetValue(entry, component.Score, component.ScoreData{
 		MovesRemaining: config.MovesAllowed,
-		EnergyToWin:    config.EnergyToWin,
+		BossHitpoints:  config.EnergyToWin,
 	})
 }
