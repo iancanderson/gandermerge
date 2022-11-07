@@ -3,6 +3,8 @@ github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8
 github.com/ebitengine/purego v0.0.0-20220907032450-cf3e27c364c7/go.mod h1:Eh8I3yvknDYZeCuXH9kRNaPuHEwvXDCk378o9xszmHg=
 github.com/ebitengine/purego v0.2.0-alpha.0.20220915044048-aa1b0f680473 h1:gvI3mxzjexvkakZNJkYRZOIWRQTGa8ucsQtQ/tN2VJk=
 github.com/ebitengine/purego v0.2.0-alpha.0.20220915044048-aa1b0f680473/go.mod h1:8K86Hsai2ghNjg9h/9P9tDdLAhUNwqNg10OESLDOam8=
+github.com/ebitengine/purego v0.2.0-alpha.0.20221104133025-13a6f7821dfb h1:wH2M2HH5XBVqFCd4aLkKlK44NVKrDca/UlWmStRTiHk=
+github.com/ebitengine/purego v0.2.0-alpha.0.20221104133025-13a6f7821dfb/go.mod h1:iIjxzd6CiRiOG0UyXP+V1+jWqUXVjPKLAI0mRfJZTmQ=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20220806181222-55e207c401ad h1:kX51IjbsJPCvzV9jUoVQG9GEUqIq5hjfYzXTqQ52Rh8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20220806181222-55e207c401ad/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b h1:GgabKamyOYguHqHjSkDACcgoPIz3w0Dis/zJ1wyHHHU=
@@ -13,9 +15,15 @@ github.com/hajimehoshi/bitmapfont/v2 v2.2.1 h1:y7zcy02/UgO24IL3COqYtrRZzhRucNBtm
 github.com/hajimehoshi/bitmapfont/v2 v2.2.1/go.mod h1:wjrYAy8vKgj9JsFgnYAOK346/uvE22TlmqouzdnYIs0=
 github.com/hajimehoshi/ebiten/v2 v2.5.0-alpha.4 h1:aSoBkPdyr/KZ6c1BlbqoE+jtBydDbH/cdI2F0a7Xn+M=
 github.com/hajimehoshi/ebiten/v2 v2.5.0-alpha.4/go.mod h1:jRLPYNhdk7W/8fej80PyTxvrKBQrCZSIBdRWtSRnPJw=
+github.com/hajimehoshi/ebiten/v2 v2.5.0-alpha.5 h1:JrjeUMWHu4OrTs7G+5xRgtPfWhsVQanCvdpbmAReLtE=
+github.com/hajimehoshi/ebiten/v2 v2.5.0-alpha.5/go.mod h1:yQl47tTo7GLJSD6fb7RDaoLCsDLs2VvME6iSOYNDBQk=
 github.com/hajimehoshi/go-mp3 v0.3.3/go.mod h1:qMJj/CSDxx6CGHiZeCgbiq2DSUkbK0UbtXShQcnfyMM=
+github.com/hajimehoshi/oto v0.6.1 h1:7cJz/zRQV4aJvMSSRqzN2TImoVVMpE0BCY4nrNJaDOM=
 github.com/hajimehoshi/oto v0.6.1/go.mod h1:0QXGEkbuJRohbJaxr7ZQSxnju7hEhseiPx2hrh6raOI=
+github.com/hajimehoshi/oto/v2 v2.4.0-alpha.4 h1:m29xzbn3Pv5MgvgjMPs7m28uhUgVt3B3AIGjQLgkqUI=
 github.com/hajimehoshi/oto/v2 v2.4.0-alpha.4/go.mod h1:OdGUICBjy7upAjvqqacbB63XIuYR3fqXZ7kYtlVYJgQ=
+github.com/hajimehoshi/oto/v2 v2.4.0-alpha.5.0.20221105141506-9d0b3205a511 h1:3MwsS4g8rQ/zS0p+UIBKvxtv73Dfg0DI0mzco2Bn1F0=
+github.com/hajimehoshi/oto/v2 v2.4.0-alpha.5.0.20221105141506-9d0b3205a511/go.mod h1:cpsv6MNsu5eykbuCV5ZeAugFzr3KNOwJAt9jujuwEVA=
 github.com/jakecoffman/cp v1.2.1/go.mod h1:JjY/Fp6d8E1CHnu74gWNnU0+b9VzEdUVPoJxg2PsTQg=
 github.com/jezek/xgb v1.0.1 h1:YUGhxps0aR7J2Xplbs23OHnV1mWaxFVcOl9b+1RQkt8=
 github.com/jezek/xgb v1.0.1/go.mod h1:nrhwO0FX/enq75I7Y7G8iN1ubpSGZEiA3v9e9GyRFlk=

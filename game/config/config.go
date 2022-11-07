@@ -9,3 +9,4 @@ const WindowWidth = 768
 const OrbGridTopMargin = WindowHeight - (Rows * RowHeight)
 const MovesAllowed = 20
 const EnergyToWin = 100
+const AudioSampleRate = 44100

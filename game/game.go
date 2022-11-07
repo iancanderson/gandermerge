@@ -41,6 +41,7 @@ func NewGame() *Game {
 
 	system.Scoreboard.Startup(g.ecs)
 	system.Enemy.Startup(g.ecs)
+	system.Input.Startup(g.ecs)
 
 	g.ecs.AddSystem(system.Input.Update)
 	g.ecs.AddSystem(system.GridGravity.Update)

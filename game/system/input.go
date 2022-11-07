@@ -1,6 +1,11 @@
 package system
 
 import (
+	"bytes"
+
+	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/wav"
+	"github.com/iancanderson/gandermerge/game/assets/sounds"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/layers"
@@ -69,6 +74,7 @@ type input struct {
 	inputSource     util.InputSource
 	scoreQuery      *query.Query
 	selectableQuery *query.Query
+	energySounds    map[component.EnergyType]*audio.Player
 }
 
 var Input = &input{
@@ -85,6 +91,30 @@ var Input = &input{
 		filter.Contains(
 			component.Score,
 		)),
+}
+
+func (r *input) Startup(ecs *ecs.ECS) {
+	audioContext := audio.NewContext(config.AudioSampleRate)
+
+	soundData := map[component.EnergyType][]byte{
+		component.Poison:  sounds.Poison_wav,
+		component.Ghost:   sounds.Ghost_breath_wav,
+		component.Psychic: sounds.Psychic_wav,
+	}
+
+	r.energySounds = make(map[component.EnergyType]*audio.Player)
+
+	for energyType, data := range soundData {
+		stream, err := wav.DecodeWithSampleRate(config.AudioSampleRate, bytes.NewReader(data))
+		if err != nil {
+			panic(err)
+		}
+		player, err := audioContext.NewPlayer(stream)
+		if err != nil {
+			panic(err)
+		}
+		r.energySounds[energyType] = player
+	}
 }
 
 func (r *input) Update(ecs *ecs.ECS) {
@@ -131,6 +161,12 @@ func (r *input) handleInputPressed(ecs *ecs.ECS) {
 			r.chain = r.createOrbChain(entry)
 			selectable := component.GetSelectable(entry)
 			selectable.Selected = true
+
+			sound := r.energySounds[r.chain.energyType]
+			if sound != nil {
+				sound.Rewind()
+				sound.Play()
+			}
 		}
 	})
 }
@@ -172,6 +208,11 @@ func (r *input) clearOrbChain(world donburi.World) {
 		for _, orb := range r.chain.orbs {
 			selectable := component.GetSelectable(orb)
 			selectable.Selected = false
+		}
+
+		sound := r.energySounds[r.chain.energyType]
+		if sound != nil {
+			sound.Pause()
 		}
 	}
 
