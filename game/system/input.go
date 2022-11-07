@@ -74,7 +74,8 @@ type input struct {
 	inputSource     util.InputSource
 	scoreQuery      *query.Query
 	selectableQuery *query.Query
-	energySounds    map[component.EnergyType]*audio.Player
+	chainSounds     map[component.EnergyType]*audio.Player
+	mergeSounds     map[component.EnergyType]*audio.Player
 }
 
 var Input = &input{
@@ -96,13 +97,22 @@ var Input = &input{
 func (r *input) Startup(ecs *ecs.ECS) {
 	audioContext := audio.NewContext(config.AudioSampleRate)
 
-	soundData := map[component.EnergyType][]byte{
-		component.Poison:  sounds.Poison_wav,
-		component.Ghost:   sounds.Ghost_breath_wav,
-		component.Psychic: sounds.Psychic_wav,
+	chainSoundData := map[component.EnergyType][]byte{
+		component.Poison: sounds.PoisonChain,
+		component.Ghost:  sounds.GhostChain,
 	}
 
-	r.energySounds = make(map[component.EnergyType]*audio.Player)
+	r.chainSounds = loadSounds(chainSoundData, audioContext)
+
+	mergeSoundData := map[component.EnergyType][]byte{
+		component.Poison: sounds.PoisonMerge,
+		component.Ghost:  sounds.GhostMerge,
+	}
+	r.mergeSounds = loadSounds(mergeSoundData, audioContext)
+}
+
+func loadSounds(soundData map[component.EnergyType][]byte, audioContext *audio.Context) map[component.EnergyType]*audio.Player {
+	sounds := make(map[component.EnergyType]*audio.Player)
 
 	for energyType, data := range soundData {
 		stream, err := wav.DecodeWithSampleRate(config.AudioSampleRate, bytes.NewReader(data))
@@ -113,8 +123,9 @@ func (r *input) Startup(ecs *ecs.ECS) {
 		if err != nil {
 			panic(err)
 		}
-		r.energySounds[energyType] = player
+		sounds[energyType] = player
 	}
+	return sounds
 }
 
 func (r *input) Update(ecs *ecs.ECS) {
@@ -162,7 +173,7 @@ func (r *input) handleInputPressed(ecs *ecs.ECS) {
 			selectable := component.GetSelectable(entry)
 			selectable.Selected = true
 
-			sound := r.energySounds[r.chain.energyType]
+			sound := r.chainSounds[r.chain.energyType]
 			if sound != nil {
 				sound.Rewind()
 				sound.Play()
@@ -185,6 +196,16 @@ func (r *input) clearOrbChain(world donburi.World) {
 	}
 
 	if r.chain.CanBeMerged() {
+		chainSound := r.chainSounds[r.chain.energyType]
+		if chainSound != nil {
+			chainSound.Pause()
+		}
+		sound := r.mergeSounds[r.chain.energyType]
+		if sound != nil {
+			sound.Rewind()
+			sound.Play()
+		}
+
 		energyEmitted := r.chain.Len()
 		entry, ok := r.scoreQuery.FirstEntity(world)
 		if ok {
@@ -210,7 +231,7 @@ func (r *input) clearOrbChain(world donburi.World) {
 			selectable.Selected = false
 		}
 
-		sound := r.energySounds[r.chain.energyType]
+		sound := r.chainSounds[r.chain.energyType]
 		if sound != nil {
 			sound.Pause()
 		}

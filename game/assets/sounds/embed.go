@@ -5,12 +5,15 @@ import (
 )
 
 var (
-	//go:embed calvin-ghost-breath.wav
-	Ghost_breath_wav []byte
+	//go:embed ghost-chain.wav
+	GhostChain []byte
 
-	//go:embed dylan-poison.wav
-	Poison_wav []byte
+	//go:embed ghost-merge.wav
+	GhostMerge []byte
 
-	//go:embed calvin-ian-dylan-psychic-glass.wav
-	Psychic_wav []byte
+	//go:embed poison-chain.wav
+	PoisonChain []byte
+
+	//go:embed poison-merge.wav
+	PoisonMerge []byte
 )
