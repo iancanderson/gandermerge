@@ -216,12 +216,15 @@ func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) 
 
 	multiplierStr := "1x"
 	var multiplierColor color.Color = color.White
+	bossText := ""
 	if multiplier == 0.5 {
 		multiplierStr = "½x"
 		multiplierColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
+		bossText = "Meh."
 	} else if multiplier == 2 {
 		multiplierStr = "2x"
 		multiplierColor = color.RGBA{0x00, 0xff, 0x00, 0xff}
+		bossText = "Ouch!"
 	}
 
 	donburi.SetValue(entry, component.Text,
@@ -231,6 +234,28 @@ func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) 
 			Y:        300,
 			FontFace: util.FontManager.Go108,
 			Color:    multiplierColor,
+		})
+
+	donburi.SetValue(entry, component.Expiration,
+		component.ExpirationData{
+			TTL: time.Second,
+		})
+
+	spawnBubbleText(ecs, world, bossText)
+}
+
+func spawnBubbleText(ecs *ecs.ECS, world donburi.World, text string) {
+	entity := ecs.Create(layers.LayerEnemy, component.Text, component.Expiration)
+	entry := ecs.World.Entry(entity)
+
+	donburi.SetValue(entry, component.Text,
+		component.TextData{
+			Text:     text,
+			X:        550,
+			Y:        230,
+			FontFace: util.FontManager.Go36,
+			Color:    color.Black,
+			Bubble:   component.BubbleLeft,
 		})
 
 	donburi.SetValue(entry, component.Expiration,
