@@ -68,7 +68,7 @@ func (s *scoreboard) Update(ecs *ecs.ECS) {
 	}
 
 	score := component.Score.Get(scoreEntry)
-	if score.Won() || score.Lost() {
+	if score.GameOver() {
 		playButton := s.findOrSpawnPlayAgainButton(ecs)
 		buttonSprite := component.Sprite.Get(playButton)
 

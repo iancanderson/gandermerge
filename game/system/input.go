@@ -113,7 +113,7 @@ func (r *input) Startup(ecs *ecs.ECS) {
 func (r *input) Update(ecs *ecs.ECS) {
 	// Check if game is over
 	score, ok := r.scoreQuery.FirstEntity(ecs.World)
-	if ok && component.Score.Get(score).IsGameOver() {
+	if ok && component.Score.Get(score).GameOver() {
 		return
 	}
 

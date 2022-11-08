@@ -10,8 +10,8 @@ type ScoreData struct {
 	EnemiesAreDead bool
 }
 
-func (s *ScoreData) IsGameOver() bool {
-	return s.MovesRemaining <= 0 || s.EnemiesAreDead
+func (s *ScoreData) GameOver() bool {
+	return s.Won() || s.Lost()
 }
 
 func (s *ScoreData) Won() bool {
