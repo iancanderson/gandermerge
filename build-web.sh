@@ -7,4 +7,5 @@ git checkout gh-pages
 git stash pop
 git checkout --theirs gandermerge.wasm
 git commit -am "New web release"
+git push
 git checkout main
