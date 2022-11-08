@@ -10,10 +10,6 @@ type GridPositionData struct {
 
 var GridPosition = donburi.NewComponentType[GridPositionData]()
 
-func GetGridPosition(entry *donburi.Entry) *GridPositionData {
-	return donburi.Get[GridPositionData](entry, GridPosition)
-}
-
 func (g *GridPositionData) IsAdjacent(other *GridPositionData) bool {
 	rowDiff := g.Row - other.Row
 	if rowDiff < 0 {

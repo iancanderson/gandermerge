@@ -8,7 +8,3 @@ type ProjectileData struct {
 }
 
 var Projectile = donburi.NewComponentType[ProjectileData]()
-
-func GetProjectile(entry *donburi.Entry) *ProjectileData {
-	return donburi.Get[ProjectileData](entry, Projectile)
-}

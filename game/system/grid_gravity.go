@@ -41,7 +41,7 @@ func (g *gridGravity) setNewGridPositions(grid [][]*donburi.Entry) {
 				emptyRows++
 			} else {
 				// Move the orb down
-				gridPosition := component.GetGridPosition(entry)
+				gridPosition := component.GridPosition.Get(entry)
 				gridPosition.Row += emptyRows
 				donburi.Add(entry, component.GridPosition, gridPosition)
 			}
@@ -52,8 +52,8 @@ func (g *gridGravity) setNewGridPositions(grid [][]*donburi.Entry) {
 func (g *gridGravity) animateToGridPositions(ecs *ecs.ECS) {
 	// Move orbs towards their grid positions
 	g.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
-		sprite := component.GetSprite(entry)
-		gridPosition := component.GetGridPosition(entry)
+		sprite := component.Sprite.Get(entry)
+		gridPosition := component.GridPosition.Get(entry)
 
 		if sprite.Y < util.GridYPosition(gridPosition.Row) {
 			sprite.Y += 8

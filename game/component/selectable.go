@@ -7,7 +7,3 @@ type SelectableData struct {
 }
 
 var Selectable = donburi.NewComponentType[SelectableData]()
-
-func GetSelectable(entry *donburi.Entry) *SelectableData {
-	return donburi.Get[SelectableData](entry, Selectable)
-}

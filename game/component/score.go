@@ -28,7 +28,3 @@ func (s *ScoreData) NewGame() {
 }
 
 var Score = donburi.NewComponentType[ScoreData]()
-
-func GetScore(entry *donburi.Entry) *ScoreData {
-	return donburi.Get[ScoreData](entry, Score)
-}

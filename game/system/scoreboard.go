@@ -46,7 +46,7 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		return
 	}
 
-	score := component.GetScore(scoreEntry)
+	score := component.Score.Get(scoreEntry)
 	moves := fmt.Sprintf("Moves Remaining: %d", score.MovesRemaining)
 
 	fontface := util.FontManager.Go36
@@ -67,10 +67,10 @@ func (s *scoreboard) Update(ecs *ecs.ECS) {
 		return
 	}
 
-	score := component.GetScore(scoreEntry)
+	score := component.Score.Get(scoreEntry)
 	if score.Won() || score.Lost() {
 		playButton := s.findOrSpawnPlayAgainButton(ecs)
-		buttonSprite := component.GetSprite(playButton)
+		buttonSprite := component.Sprite.Get(playButton)
 
 		if s.inputSource == nil {
 			s.inputSource = util.JustPressedInputSource()
@@ -116,7 +116,7 @@ func (s *scoreboard) drawPlayAgainButton(ecs *ecs.ECS, screen *ebiten.Image) {
 	if !ok {
 		return
 	}
-	sprite := component.GetSprite(playButtonEntry)
+	sprite := component.Sprite.Get(playButtonEntry)
 	ebitenutil.DrawRect(sprite.Image, 0, 0, buttonWidth, buttonHeight, color.RGBA{0x00, 0xff, 0x00, 0xff})
 	text.Draw(sprite.Image, "Play Again", util.FontManager.Go36, 10, 40, color.Black)
 

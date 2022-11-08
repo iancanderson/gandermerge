@@ -28,13 +28,13 @@ func (o *orbChain) Add(entry *donburi.Entry) bool {
 	if o.contains(entry) {
 		return false
 	}
-	if o.energyType != component.GetEnergy(entry).EnergyType {
+	if o.energyType != component.Energy.Get(entry).EnergyType {
 		return false
 	}
 	if len(o.orbs) > 0 {
 		// Only allow adjacent orbs to be added to the chain
 		lastOrb := o.orbs[len(o.orbs)-1]
-		if !component.GetGridPosition(lastOrb).IsAdjacent(component.GetGridPosition(entry)) {
+		if !component.GridPosition.Get(lastOrb).IsAdjacent(component.GridPosition.Get(entry)) {
 			return false
 		}
 	}
@@ -107,7 +107,7 @@ func (r *input) Startup(ecs *ecs.ECS) {
 func (r *input) Update(ecs *ecs.ECS) {
 	// Check if game is over
 	score, ok := r.scoreQuery.FirstEntity(ecs.World)
-	if ok && component.GetScore(score).IsGameOver() {
+	if ok && component.Score.Get(score).IsGameOver() {
 		return
 	}
 
@@ -124,15 +124,15 @@ func (r *input) Update(ecs *ecs.ECS) {
 
 	if r.chain != nil {
 		r.selectableQuery.EachEntity(ecs.World, func(entry *donburi.Entry) {
-			sprite := component.GetSprite(entry)
+			sprite := component.Sprite.Get(entry)
 			inputX, inputY := r.inputSource.Position()
 			if sprite.In(inputX, inputY) {
 				if r.chain.Add(entry) {
-					selectable := component.GetSelectable(entry)
+					selectable := component.Selectable.Get(entry)
 					selectable.Selected = true
 				} else if r.chain.IsSecondToLast(entry) {
 					popped := r.chain.Pop()
-					selectable := component.GetSelectable(popped)
+					selectable := component.Selectable.Get(popped)
 					selectable.Selected = false
 				}
 			}
@@ -142,11 +142,11 @@ func (r *input) Update(ecs *ecs.ECS) {
 
 func (r *input) handleInputPressed(ecs *ecs.ECS) {
 	r.selectableQuery.EachEntity(ecs.World, func(entry *donburi.Entry) {
-		sprite := component.GetSprite(entry)
+		sprite := component.Sprite.Get(entry)
 		inputX, inputY := r.inputSource.Position()
 		if sprite.In(inputX, inputY) {
 			r.chain = r.createOrbChain(entry)
-			selectable := component.GetSelectable(entry)
+			selectable := component.Selectable.Get(entry)
 			selectable.Selected = true
 			r.soundManager.PlayChainSound(r.chain.energyType)
 		}
@@ -156,7 +156,7 @@ func (r *input) handleInputPressed(ecs *ecs.ECS) {
 func (r *input) createOrbChain(entry *donburi.Entry) *orbChain {
 	chain := &orbChain{
 		orbs:       []*donburi.Entry{entry},
-		energyType: component.GetEnergy(entry).EnergyType,
+		energyType: component.Energy.Get(entry).EnergyType,
 	}
 	return chain
 }
@@ -181,7 +181,7 @@ func (r *input) clearOrbChain(ecs *ecs.ECS, world donburi.World) {
 		}
 	} else {
 		for _, orb := range r.chain.orbs {
-			selectable := component.GetSelectable(orb)
+			selectable := component.Selectable.Get(orb)
 			selectable.Selected = false
 		}
 
@@ -195,12 +195,12 @@ func (r *input) hitEnemy(ecs *ecs.ECS, world donburi.World) {
 	energyEmitted := r.chain.Len()
 	entry, ok := r.scoreQuery.FirstEntity(world)
 	if ok {
-		score := component.GetScore(entry)
+		score := component.Score.Get(entry)
 		score.MovesRemaining--
 
 		enemyEntry, ok := r.enemyQuery.FirstEntity(world)
 		if ok {
-			enemyEnergyType := component.GetEnergy(enemyEntry).EnergyType
+			enemyEnergyType := component.Energy.Get(enemyEntry).EnergyType
 			attackStrength := core.ScaleAttack(energyEmitted, r.chain.energyType, enemyEnergyType)
 			component.Hitpoints.Get(enemyEntry).Hitpoints -= attackStrength
 

@@ -16,7 +16,3 @@ type EnergyData struct {
 }
 
 var Energy = donburi.NewComponentType[EnergyData]()
-
-func GetEnergy(entry *donburi.Entry) *EnergyData {
-	return donburi.Get[EnergyData](entry, Energy)
-}

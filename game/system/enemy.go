@@ -161,7 +161,7 @@ func (e *enemy) Update(ecs *ecs.ECS) {
 	if !ok {
 		return
 	}
-	score := component.GetScore(scoreEntry)
+	score := component.Score.Get(scoreEntry)
 	if score.Won() {
 		e.sprites.EachEntity(ecs.World, func(entry *donburi.Entry) {
 			ecs.World.Remove(entry.Entity())
@@ -174,7 +174,7 @@ func (e *enemy) Update(ecs *ecs.ECS) {
 func (e *enemy) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	// TODO: consolidate with render.go
 	e.sprites.EachEntity(ecs.World, func(entry *donburi.Entry) {
-		sprite := component.GetSprite(entry)
+		sprite := component.Sprite.Get(entry)
 		op := sprite.DrawOptions()
 		screen.DrawImage(sprite.Image, op)
 	})

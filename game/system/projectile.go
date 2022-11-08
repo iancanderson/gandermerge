@@ -31,8 +31,8 @@ func (p *projectile) Update(ecs *ecs.ECS) {
 	p.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
 
 		// Move the projectile
-		sprite := component.GetSprite(entry)
-		projectile := component.GetProjectile(entry)
+		sprite := component.Sprite.Get(entry)
+		projectile := component.Projectile.Get(entry)
 
 		if projectile.DestX > sprite.X {
 			sprite.X += projectileVelocity

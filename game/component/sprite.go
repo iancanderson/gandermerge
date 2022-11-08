@@ -66,7 +66,3 @@ func (s SpriteData) WithRedTint(redTint bool) SpriteData {
 	s.redTint = redTint
 	return s
 }
-
-func GetSprite(entry *donburi.Entry) *SpriteData {
-	return donburi.Get[SpriteData](entry, Sprite)
-}

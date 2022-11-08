@@ -20,7 +20,7 @@ func BuildGrid(ecs *ecs.ECS) [][]*donburi.Entry {
 
 	// Keep track of where the empty space is
 	query.EachEntity(ecs.World, func(entry *donburi.Entry) {
-		gridPosition := component.GetGridPosition(entry)
+		gridPosition := component.GridPosition.Get(entry)
 		if grid[gridPosition.Col] == nil {
 			grid[gridPosition.Col] = make([]*donburi.Entry, config.Rows)
 		}

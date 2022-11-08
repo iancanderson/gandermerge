@@ -26,8 +26,8 @@ var Render = &render{
 
 func (r *render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	r.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
-		sprite := component.GetSprite(entry)
-		selectable := component.GetSelectable(entry)
+		sprite := component.Sprite.Get(entry)
+		selectable := component.Selectable.Get(entry)
 		op := sprite.DrawOptions()
 		if selectable.Selected {
 			op.ColorM.Scale(0.5, 0.5, 0.5, 1)
