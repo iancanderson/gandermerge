@@ -12,7 +12,8 @@ import (
 )
 
 type render struct {
-	query *query.Query
+	query      *query.Query
+	scoreQuery *query.Query
 }
 
 var Render = &render{
@@ -22,9 +23,21 @@ var Render = &render{
 			component.Sprite,
 			component.Selectable,
 		)),
+	scoreQuery: ecs.NewQuery(
+		layers.LayerScoreboard,
+		filter.Contains(
+			component.Score,
+		)),
 }
 
 func (r *render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
+	// Check if game is over
+	score, ok := r.scoreQuery.FirstEntity(ecs.World)
+	gameOverColorScale := 1.0
+	if ok && component.Score.Get(score).GameOver() {
+		gameOverColorScale = 0.25
+	}
+
 	r.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
 		sprite := component.Sprite.Get(entry)
 		selectable := component.Selectable.Get(entry)
@@ -32,6 +45,7 @@ func (r *render) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		if selectable.Selected {
 			op.ColorM.Scale(0.5, 0.5, 0.5, 1)
 		}
+		op.ColorM.Scale(1.0, 1.0, 1.0, gameOverColorScale)
 
 		screen.DrawImage(sprite.Image, op)
 	})

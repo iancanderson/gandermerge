@@ -1,7 +1,6 @@
 package system
 
 import (
-	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -116,8 +115,6 @@ func (h *hitpointsBar) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		float64(h.height-4),
 		color.Black,
 	)
-
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("Enemy HP: %d", h.hp))
 }
 
 func (e *enemy) Startup(ecs *ecs.ECS) {

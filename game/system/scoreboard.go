@@ -47,16 +47,33 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	}
 
 	score := component.Score.Get(scoreEntry)
-	moves := fmt.Sprintf("Moves Remaining: %d", score.MovesRemaining)
 
 	fontface := util.FontManager.Go36
-	text.Draw(screen, moves, fontface, 40, 60, color.White)
+	var movesLeftColor color.Color = color.RGBA{0x00, 0xff, 0x00, 0xff}
+	if score.MovesRemaining < 5 {
+		movesLeftColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
+	} else if score.MovesRemaining < 10 {
+		movesLeftColor = color.RGBA{0xff, 0xff, 0x00, 0xff}
+	} else if score.MovesRemaining < 15 {
+		movesLeftColor = color.White
+	}
+	movePluralized := "moves"
+	if score.MovesRemaining == 1 {
+		movePluralized = "move"
+	}
+	moves := fmt.Sprintf("%d %s left", score.MovesRemaining, movePluralized)
+	textWidth := text.BoundString(fontface, moves).Dx()
+	text.Draw(screen, moves, fontface, config.WindowWidth/2-textWidth/2, 60, movesLeftColor)
 
 	if score.Won() {
-		text.Draw(screen, "You Win!", fontface, 40, 100, color.RGBA{0x00, 0xff, 0x00, 0xff})
+		textValue := "You won!"
+		textWidth = text.BoundString(fontface, textValue).Dx()
+		text.Draw(screen, textValue, fontface, config.WindowWidth/2-textWidth/2, 110, color.RGBA{0x00, 0xff, 0x00, 0xff})
 		s.drawPlayAgainButton(ecs, screen)
 	} else if score.Lost() {
-		text.Draw(screen, "You Lost!", fontface, 40, 100, color.RGBA{0xff, 0x00, 0x00, 0xff})
+		textValue := "You lost!"
+		textWidth = text.BoundString(fontface, textValue).Dx()
+		text.Draw(screen, textValue, fontface, config.WindowWidth/2-textWidth/2, 110, color.RGBA{0xff, 0x00, 0x00, 0xff})
 		s.drawPlayAgainButton(ecs, screen)
 	}
 }
@@ -106,7 +123,7 @@ func spawnPlayAgainButton(ecs *ecs.ECS) *donburi.Entry {
 	donburi.SetValue(entry, component.Sprite, component.SpriteData{
 		Image: ebiten.NewImage(buttonWidth, buttonHeight),
 		X:     config.WindowWidth/2 - buttonWidth/2,
-		Y:     120,
+		Y:     config.WindowHeight / 2,
 	}.WithScale(1.0))
 	return entry
 }
@@ -118,7 +135,7 @@ func (s *scoreboard) drawPlayAgainButton(ecs *ecs.ECS, screen *ebiten.Image) {
 	}
 	sprite := component.Sprite.Get(playButtonEntry)
 	ebitenutil.DrawRect(sprite.Image, 0, 0, buttonWidth, buttonHeight, color.RGBA{0x00, 0xff, 0x00, 0xff})
-	text.Draw(sprite.Image, "Play Again", util.FontManager.Go36, 10, 40, color.Black)
+	text.Draw(sprite.Image, "Play again", util.FontManager.Go36, 10, 40, color.Black)
 
 	op := sprite.DrawOptions()
 	screen.DrawImage(sprite.Image, op)
