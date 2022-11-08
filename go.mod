@@ -14,6 +14,8 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/hajimehoshi/oto/v2 v2.4.0-alpha.4 // indirect
 	github.com/jezek/xgb v1.0.1 // indirect
+	github.com/jfreymuth/oggvorbis v1.0.4 // indirect
+	github.com/jfreymuth/vorbis v1.0.2 // indirect
 	golang.org/x/exp v0.0.0-20221031165847-c99f073a8326 // indirect
 	golang.org/x/mobile v0.0.0-20221012134814-c746ac228303 // indirect
 	golang.org/x/sys v0.1.0 // indirect

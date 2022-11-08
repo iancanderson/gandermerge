@@ -19,7 +19,7 @@ func (s *ScoreData) Won() bool {
 }
 
 func (s *ScoreData) Lost() bool {
-	return s.MovesRemaining <= 0
+	return s.MovesRemaining <= 0 && !s.EnemiesAreDead
 }
 
 func (s *ScoreData) NewGame() {

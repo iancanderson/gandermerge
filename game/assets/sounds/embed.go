@@ -5,15 +5,18 @@ import (
 )
 
 var (
-	//go:embed ghost-chain.wav
+	//go:embed ghost-chain.ogg
 	GhostChain []byte
-
-	//go:embed ghost-merge.wav
+	//go:embed ghost-merge.ogg
 	GhostMerge []byte
 
-	//go:embed poison-chain.wav
+	//go:embed poison-chain.ogg
 	PoisonChain []byte
-
-	//go:embed poison-merge.wav
+	//go:embed poison-merge.ogg
 	PoisonMerge []byte
+
+	//go:embed psychic-chain.ogg
+	PsychicChain []byte
+	//go:embed psychic-merge.ogg
+	PsychicMerge []byte
 )

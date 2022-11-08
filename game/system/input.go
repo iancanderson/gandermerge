@@ -1,11 +1,6 @@
 package system
 
 import (
-	"bytes"
-
-	"github.com/hajimehoshi/ebiten/v2/audio"
-	"github.com/hajimehoshi/ebiten/v2/audio/wav"
-	"github.com/iancanderson/gandermerge/game/assets/sounds"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/core"
@@ -76,8 +71,7 @@ type input struct {
 	scoreQuery      *query.Query
 	selectableQuery *query.Query
 	enemyQuery      *query.Query
-	chainSounds     map[core.EnergyType]*audio.Player
-	mergeSounds     map[core.EnergyType]*audio.Player
+	soundManager    *util.SoundManager
 }
 
 var Input = &input{
@@ -100,40 +94,11 @@ var Input = &input{
 		filter.Contains(
 			component.Score,
 		)),
+	soundManager: util.NewSoundManager(),
 }
 
 func (r *input) Startup(ecs *ecs.ECS) {
-	audioContext := audio.NewContext(config.AudioSampleRate)
-
-	chainSoundData := map[core.EnergyType][]byte{
-		core.Poison: sounds.PoisonChain,
-		core.Ghost:  sounds.GhostChain,
-	}
-
-	r.chainSounds = loadSounds(chainSoundData, audioContext)
-
-	mergeSoundData := map[core.EnergyType][]byte{
-		core.Poison: sounds.PoisonMerge,
-		core.Ghost:  sounds.GhostMerge,
-	}
-	r.mergeSounds = loadSounds(mergeSoundData, audioContext)
-}
-
-func loadSounds(soundData map[core.EnergyType][]byte, audioContext *audio.Context) map[core.EnergyType]*audio.Player {
-	sounds := make(map[core.EnergyType]*audio.Player)
-
-	for energyType, data := range soundData {
-		stream, err := wav.DecodeWithSampleRate(config.AudioSampleRate, bytes.NewReader(data))
-		if err != nil {
-			panic(err)
-		}
-		player, err := audioContext.NewPlayer(stream)
-		if err != nil {
-			panic(err)
-		}
-		sounds[energyType] = player
-	}
-	return sounds
+	r.soundManager.LoadSounds()
 }
 
 func (r *input) Update(ecs *ecs.ECS) {
@@ -180,12 +145,7 @@ func (r *input) handleInputPressed(ecs *ecs.ECS) {
 			r.chain = r.createOrbChain(entry)
 			selectable := component.GetSelectable(entry)
 			selectable.Selected = true
-
-			sound := r.chainSounds[r.chain.energyType]
-			if sound != nil {
-				sound.Rewind()
-				sound.Play()
-			}
+			r.soundManager.PlayChainSound(r.chain.energyType)
 		}
 	})
 }
@@ -204,16 +164,8 @@ func (r *input) clearOrbChain(world donburi.World) {
 	}
 
 	if r.chain.CanBeMerged() {
-		chainSound := r.chainSounds[r.chain.energyType]
-		if chainSound != nil {
-			chainSound.Pause()
-		}
-		sound := r.mergeSounds[r.chain.energyType]
-		if sound != nil {
-			sound.Rewind()
-			sound.Play()
-		}
-
+		r.soundManager.PauseChainSound(r.chain.energyType)
+		r.soundManager.PlayMergeSound(r.chain.energyType)
 		r.hitEnemy(world)
 
 		for _, orb := range r.chain.orbs {
@@ -230,10 +182,7 @@ func (r *input) clearOrbChain(world donburi.World) {
 			selectable.Selected = false
 		}
 
-		sound := r.chainSounds[r.chain.energyType]
-		if sound != nil {
-			sound.Pause()
-		}
+		r.soundManager.PauseChainSound(r.chain.energyType)
 	}
 
 	r.chain = nil
