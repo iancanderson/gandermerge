@@ -15,6 +15,8 @@ import (
 	"github.com/yohamta/donburi/query"
 )
 
+var MultiplierText = donburi.NewTag()
+
 type orbChain struct {
 	orbs       []*donburi.Entry
 	energyType core.EnergyType
@@ -69,12 +71,13 @@ func (o *orbChain) contains(entry *donburi.Entry) bool {
 }
 
 type input struct {
-	chain           *orbChain
-	inputSource     util.InputSource
-	scoreQuery      *query.Query
-	selectableQuery *query.Query
-	enemyQuery      *query.Query
-	soundManager    *util.SoundManager
+	chain               *orbChain
+	inputSource         util.InputSource
+	scoreQuery          *query.Query
+	selectableQuery     *query.Query
+	enemyQuery          *query.Query
+	multiplierTextQuery *query.Query
+	soundManager        *util.SoundManager
 }
 
 var Input = &input{
@@ -84,6 +87,9 @@ var Input = &input{
 			component.Energy,
 			component.Hitpoints,
 		)),
+	multiplierTextQuery: ecs.NewQuery(
+		layers.LayerEnemy,
+		filter.Contains(MultiplierText)),
 	selectableQuery: ecs.NewQuery(
 		layers.LayerOrbs,
 		filter.Contains(
@@ -149,6 +155,13 @@ func (r *input) handleInputPressed(ecs *ecs.ECS) {
 			selectable := component.Selectable.Get(entry)
 			selectable.Selected = true
 			r.soundManager.PlayChainSound(r.chain.energyType)
+
+			enemyEntry, ok := r.enemyQuery.FirstEntity(ecs.World)
+			if ok {
+				enemyEnergyType := component.Energy.Get(enemyEntry).EnergyType
+				multiplier := core.AttackMultiplier(r.chain.energyType, enemyEnergyType)
+				spawnMultiplierSign(ecs, ecs.World, multiplier)
+			}
 		}
 	})
 }
@@ -166,10 +179,19 @@ func (r *input) clearOrbChain(ecs *ecs.ECS, world donburi.World) {
 		return
 	}
 
+	multiplierText, ok := r.multiplierTextQuery.FirstEntity(world)
+	if !ok {
+		panic("no multiplier text")
+	}
+
 	if r.chain.CanBeMerged() {
 		r.soundManager.PauseChainSound(r.chain.energyType)
 		r.soundManager.PlayMergeSound(r.chain.energyType)
 		r.hitEnemy(ecs, world)
+		donburi.Add(multiplierText, component.Expiration,
+			&component.ExpirationData{
+				TTL: time.Second,
+			})
 
 		for _, orb := range r.chain.orbs {
 			donburi.Add(orb, component.Projectile,
@@ -186,6 +208,7 @@ func (r *input) clearOrbChain(ecs *ecs.ECS, world donburi.World) {
 		}
 
 		r.soundManager.PauseChainSound(r.chain.energyType)
+		multiplierText.Remove()
 	}
 
 	r.chain = nil
@@ -205,26 +228,23 @@ func (r *input) hitEnemy(ecs *ecs.ECS, world donburi.World) {
 			component.Hitpoints.Get(enemyEntry).Hitpoints -= attackStrength
 
 			multiplier := core.AttackMultiplier(r.chain.energyType, enemyEnergyType)
-			spawnMultiplierSign(ecs, world, multiplier)
+			spawnBubbleText(ecs, world, multiplier)
 		}
 	}
 }
 
 func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) {
-	entity := ecs.Create(layers.LayerEnemy, component.Text, component.Expiration)
+	entity := ecs.Create(layers.LayerEnemy, component.Text, MultiplierText)
 	entry := ecs.World.Entry(entity)
 
 	multiplierStr := "1x"
 	var multiplierColor color.Color = color.White
-	bossText := ""
 	if multiplier == 0.5 {
 		multiplierStr = "½x"
 		multiplierColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
-		bossText = "Meh."
 	} else if multiplier == 2 {
 		multiplierStr = "2x"
 		multiplierColor = color.RGBA{0x00, 0xff, 0x00, 0xff}
-		bossText = "Ouch!"
 	}
 
 	donburi.SetValue(entry, component.Text,
@@ -235,18 +255,18 @@ func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) 
 			FontFace: util.FontManager.Go108,
 			Color:    multiplierColor,
 		})
-
-	donburi.SetValue(entry, component.Expiration,
-		component.ExpirationData{
-			TTL: time.Second,
-		})
-
-	spawnBubbleText(ecs, world, bossText)
 }
 
-func spawnBubbleText(ecs *ecs.ECS, world donburi.World, text string) {
+func spawnBubbleText(ecs *ecs.ECS, world donburi.World, multiplier float64) {
 	entity := ecs.Create(layers.LayerEnemy, component.Text, component.Expiration)
 	entry := ecs.World.Entry(entity)
+
+	text := ""
+	if multiplier == 0.5 {
+		text = "Meh."
+	} else if multiplier == 2 {
+		text = "Ouch!"
+	}
 
 	donburi.SetValue(entry, component.Text,
 		component.TextData{
