@@ -251,7 +251,7 @@ func spawnBubbleText(ecs *ecs.ECS, world donburi.World, text string) {
 	donburi.SetValue(entry, component.Text,
 		component.TextData{
 			Text:     text,
-			X:        550,
+			X:        600,
 			Y:        230,
 			FontFace: util.FontManager.Go36,
 			Color:    color.Black,
