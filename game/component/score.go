@@ -7,15 +7,15 @@ import (
 
 type ScoreData struct {
 	MovesRemaining int
-	BossHitpoints  int
+	EnemiesAreDead bool
 }
 
 func (s *ScoreData) IsGameOver() bool {
-	return s.MovesRemaining <= 0 || s.BossHitpoints <= 0
+	return s.MovesRemaining <= 0 || s.EnemiesAreDead
 }
 
 func (s *ScoreData) Won() bool {
-	return s.BossHitpoints <= 0
+	return s.EnemiesAreDead
 }
 
 func (s *ScoreData) Lost() bool {
@@ -24,7 +24,7 @@ func (s *ScoreData) Lost() bool {
 
 func (s *ScoreData) NewGame() {
 	s.MovesRemaining = config.MovesAllowed
-	s.BossHitpoints = config.EnergyToWin
+	s.EnemiesAreDead = false
 }
 
 var Score = donburi.NewComponentType[ScoreData]()

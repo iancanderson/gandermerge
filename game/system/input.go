@@ -75,11 +75,18 @@ type input struct {
 	inputSource     util.InputSource
 	scoreQuery      *query.Query
 	selectableQuery *query.Query
+	enemyQuery      *query.Query
 	chainSounds     map[core.EnergyType]*audio.Player
 	mergeSounds     map[core.EnergyType]*audio.Player
 }
 
 var Input = &input{
+	enemyQuery: ecs.NewQuery(
+		layers.LayerEnemy,
+		filter.Contains(
+			component.Energy,
+			component.Hitpoints,
+		)),
 	selectableQuery: ecs.NewQuery(
 		layers.LayerOrbs,
 		filter.Contains(
@@ -207,13 +214,7 @@ func (r *input) clearOrbChain(world donburi.World) {
 			sound.Play()
 		}
 
-		energyEmitted := r.chain.Len()
-		entry, ok := r.scoreQuery.FirstEntity(world)
-		if ok {
-			score := component.GetScore(entry)
-			score.BossHitpoints -= energyEmitted
-			score.MovesRemaining--
-		}
+		r.hitEnemy(world)
 
 		for _, orb := range r.chain.orbs {
 			donburi.Add(orb, component.Projectile,
@@ -236,4 +237,20 @@ func (r *input) clearOrbChain(world donburi.World) {
 	}
 
 	r.chain = nil
+}
+
+func (r *input) hitEnemy(world donburi.World) {
+	energyEmitted := r.chain.Len()
+	entry, ok := r.scoreQuery.FirstEntity(world)
+	if ok {
+		score := component.GetScore(entry)
+		score.MovesRemaining--
+
+		enemyEntry, ok := r.enemyQuery.FirstEntity(world)
+		if ok {
+			enemyEnergyType := component.GetEnergy(enemyEntry).EnergyType
+			attackStrength := core.ScaleAttack(energyEmitted, r.chain.energyType, enemyEnergyType)
+			component.Hitpoints.Get(enemyEntry).Hitpoints -= attackStrength
+		}
+	}
 }

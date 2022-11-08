@@ -1,6 +1,7 @@
 package system
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -24,8 +25,8 @@ type enemy struct {
 
 var Enemy = &enemy{
 	hitpointsBar: hitpointsBar{
-		hpMax: config.EnergyToWin,
-		hp:    config.EnergyToWin,
+		hpMax: config.EnemyHitpoints,
+		hp:    config.EnemyHitpoints,
 	},
 	query: ecs.NewQuery(
 		layers.LayerEnemy,
@@ -52,25 +53,24 @@ type hitpointsBar struct {
 }
 
 var HitpointsBar = hitpointsBar{
-	hpMax:  config.EnergyToWin,
+	hpMax:  config.EnemyHitpoints,
 	height: 20,
 	width:  100,
 	y:      400,
 	hide:   false,
 	query: ecs.NewQuery(
-		layers.LayerScoreboard,
+		layers.LayerEnemy,
 		filter.Contains(
-			component.Score,
+			component.Hitpoints,
 		)),
 }
 
 func (h *hitpointsBar) Update(ecs *ecs.ECS) {
-	scoreEntry, ok := h.query.FirstEntity(ecs.World)
+	enemy, ok := h.query.FirstEntity(ecs.World)
 	if !ok {
 		return
 	}
-	score := component.GetScore(scoreEntry)
-	h.hp = score.BossHitpoints
+	h.hp = component.Hitpoints.Get(enemy).Hitpoints
 }
 
 func (h *hitpointsBar) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
@@ -109,6 +109,8 @@ func (h *hitpointsBar) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		float64(h.height-4),
 		color.Black,
 	)
+
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("Enemy HP: %d", h.hp))
 }
 
 func (e *enemy) Startup(ecs *ecs.ECS) {
@@ -119,6 +121,7 @@ func (e *enemy) Startup(ecs *ecs.ECS) {
 		layers.LayerEnemy,
 		component.Energy,
 		component.Sprite,
+		component.Hitpoints,
 	)
 	entry := ecs.World.Entry(entity)
 
@@ -134,6 +137,12 @@ func (e *enemy) Startup(ecs *ecs.ECS) {
 			X:     config.WindowWidth/2 - enemyWidth/2,
 			Y:     100,
 		}.WithScale(0.5).WithGreenTint(energyType == core.Poison).WithRedTint(energyType == core.Fire))
+
+	donburi.SetValue(entry, component.Hitpoints,
+		component.HitpointsData{
+			MaxHitpoints: config.EnemyHitpoints,
+			Hitpoints:    config.EnemyHitpoints,
+		})
 
 	HitpointsBar.hide = false
 }

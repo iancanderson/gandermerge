@@ -50,6 +50,7 @@ func NewGame() *Game {
 	g.ecs.AddSystem(system.Projectile.Update)
 	g.ecs.AddSystem(system.Enemy.Update)
 	g.ecs.AddRenderer(layers.LayerEnemy, system.Enemy.Draw)
+	g.ecs.AddSystem(system.Scorer.Update)
 	g.ecs.AddSystem(system.Scoreboard.Update)
 	g.ecs.AddRenderer(layers.LayerScoreboard, system.Scoreboard.Draw)
 
