@@ -50,11 +50,11 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
 	fontface := util.FontManager.Go36
 	var movesLeftColor color.Color = color.RGBA{0x00, 0xff, 0x00, 0xff}
-	if score.MovesRemaining < 5 {
+	if score.MovesRemaining <= 5 {
 		movesLeftColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
-	} else if score.MovesRemaining < 10 {
+	} else if score.MovesRemaining <= 10 {
 		movesLeftColor = color.RGBA{0xff, 0xff, 0x00, 0xff}
-	} else if score.MovesRemaining < 15 {
+	} else if score.MovesRemaining <= 15 {
 		movesLeftColor = color.White
 	}
 	movePluralized := "moves"
