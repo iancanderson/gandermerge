@@ -5,5 +5,6 @@ git add gandermerge.wasm
 git stash
 git checkout gh-pages
 git stash pop
+git add gandermerge.wasm
 git commit -am "New web release"
 git checkout main
