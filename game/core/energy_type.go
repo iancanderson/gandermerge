@@ -11,7 +11,7 @@ const (
 )
 
 func ScaleAttack(energyAmount int, attackType EnergyType, defenseType EnergyType) int {
-	return int(float64(energyAmount) * attackMultiplier(attackType, defenseType))
+	return int(float64(energyAmount) * AttackMultiplier(attackType, defenseType))
 }
 
 // - fire
@@ -33,7 +33,7 @@ func ScaleAttack(energyAmount int, attackType EnergyType, defenseType EnergyType
 // - ghost
 //   - immune to psychic
 //   - weak to ghosts
-func attackMultiplier(attackType EnergyType, defenseType EnergyType) float64 {
+func AttackMultiplier(attackType EnergyType, defenseType EnergyType) float64 {
 	switch defenseType {
 	case Fire:
 		switch attackType {

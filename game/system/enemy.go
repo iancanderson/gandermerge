@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/core"
@@ -17,10 +18,11 @@ import (
 )
 
 type enemy struct {
-	images       map[core.EnergyType]*ebiten.Image
-	query        *query.Query
-	scoreQuery   *query.Query
 	hitpointsBar hitpointsBar
+	images       map[core.EnergyType]*ebiten.Image
+	scoreQuery   *query.Query
+	sprites      *query.Query
+	textQuery    *query.Query
 }
 
 var Enemy = &enemy{
@@ -28,7 +30,7 @@ var Enemy = &enemy{
 		hpMax: config.EnemyHitpoints,
 		hp:    config.EnemyHitpoints,
 	},
-	query: ecs.NewQuery(
+	sprites: ecs.NewQuery(
 		layers.LayerEnemy,
 		filter.Contains(
 			component.Sprite,
@@ -37,6 +39,11 @@ var Enemy = &enemy{
 		layers.LayerScoreboard,
 		filter.Contains(
 			component.Score,
+		)),
+	textQuery: ecs.NewQuery(
+		layers.LayerEnemy,
+		filter.Contains(
+			component.Text,
 		)),
 }
 
@@ -156,7 +163,7 @@ func (e *enemy) Update(ecs *ecs.ECS) {
 	}
 	score := component.GetScore(scoreEntry)
 	if score.Won() {
-		e.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
+		e.sprites.EachEntity(ecs.World, func(entry *donburi.Entry) {
 			ecs.World.Remove(entry.Entity())
 		})
 
@@ -166,10 +173,15 @@ func (e *enemy) Update(ecs *ecs.ECS) {
 
 func (e *enemy) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	// TODO: consolidate with render.go
-	e.query.EachEntity(ecs.World, func(entry *donburi.Entry) {
+	e.sprites.EachEntity(ecs.World, func(entry *donburi.Entry) {
 		sprite := component.GetSprite(entry)
 		op := sprite.DrawOptions()
 		screen.DrawImage(sprite.Image, op)
+	})
+
+	e.textQuery.EachEntity(ecs.World, func(entry *donburi.Entry) {
+		textEntry := component.Text.Get(entry)
+		text.Draw(screen, textEntry.Text, textEntry.FontFace, textEntry.X, textEntry.Y, textEntry.Color)
 	})
 
 	HitpointsBar.Draw(ecs, screen)

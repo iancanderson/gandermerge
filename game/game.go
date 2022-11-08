@@ -5,6 +5,7 @@ import (
 	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/layers"
 	"github.com/iancanderson/gandermerge/game/system"
+	"github.com/iancanderson/gandermerge/game/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 )
@@ -33,13 +34,14 @@ func NewGame() *Game {
 	g := &Game{
 		ecs: createECS(),
 	}
+	util.FontManager.Startup(g.ecs)
+
 	orbSpawner := system.NewOrbSpawner()
 	orbSpawner.Startup(g.ecs)
 
 	scorer := system.Scorer
 	scorer.Startup(g.ecs)
 
-	system.Scoreboard.Startup(g.ecs)
 	system.Enemy.Startup(g.ecs)
 	system.Input.Startup(g.ecs)
 
@@ -53,6 +55,7 @@ func NewGame() *Game {
 	g.ecs.AddSystem(system.Scorer.Update)
 	g.ecs.AddSystem(system.Scoreboard.Update)
 	g.ecs.AddRenderer(layers.LayerScoreboard, system.Scoreboard.Draw)
+	g.ecs.AddSystem(system.Expirator.Update)
 
 	return g
 }

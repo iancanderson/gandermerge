@@ -1,6 +1,9 @@
 package system
 
 import (
+	"image/color"
+	"time"
+
 	"github.com/iancanderson/gandermerge/game/component"
 	"github.com/iancanderson/gandermerge/game/config"
 	"github.com/iancanderson/gandermerge/game/core"
@@ -116,7 +119,7 @@ func (r *input) Update(ecs *ecs.ECS) {
 	}
 
 	if r.inputSource != nil && r.inputSource.JustReleased() {
-		r.clearOrbChain(ecs.World)
+		r.clearOrbChain(ecs, ecs.World)
 	}
 
 	if r.chain != nil {
@@ -158,7 +161,7 @@ func (r *input) createOrbChain(entry *donburi.Entry) *orbChain {
 	return chain
 }
 
-func (r *input) clearOrbChain(world donburi.World) {
+func (r *input) clearOrbChain(ecs *ecs.ECS, world donburi.World) {
 	if r.chain == nil {
 		return
 	}
@@ -166,7 +169,7 @@ func (r *input) clearOrbChain(world donburi.World) {
 	if r.chain.CanBeMerged() {
 		r.soundManager.PauseChainSound(r.chain.energyType)
 		r.soundManager.PlayMergeSound(r.chain.energyType)
-		r.hitEnemy(world)
+		r.hitEnemy(ecs, world)
 
 		for _, orb := range r.chain.orbs {
 			donburi.Add(orb, component.Projectile,
@@ -188,7 +191,7 @@ func (r *input) clearOrbChain(world donburi.World) {
 	r.chain = nil
 }
 
-func (r *input) hitEnemy(world donburi.World) {
+func (r *input) hitEnemy(ecs *ecs.ECS, world donburi.World) {
 	energyEmitted := r.chain.Len()
 	entry, ok := r.scoreQuery.FirstEntity(world)
 	if ok {
@@ -200,6 +203,38 @@ func (r *input) hitEnemy(world donburi.World) {
 			enemyEnergyType := component.GetEnergy(enemyEntry).EnergyType
 			attackStrength := core.ScaleAttack(energyEmitted, r.chain.energyType, enemyEnergyType)
 			component.Hitpoints.Get(enemyEntry).Hitpoints -= attackStrength
+
+			multiplier := core.AttackMultiplier(r.chain.energyType, enemyEnergyType)
+			spawnMultiplierSign(ecs, world, multiplier)
 		}
 	}
+}
+
+func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) {
+	entity := ecs.Create(layers.LayerEnemy, component.Text, component.Expiration)
+	entry := ecs.World.Entry(entity)
+
+	multiplierStr := "1x"
+	var multiplierColor color.Color = color.White
+	if multiplier == 0.5 {
+		multiplierStr = "½x"
+		multiplierColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
+	} else if multiplier == 2 {
+		multiplierStr = "2x"
+		multiplierColor = color.RGBA{0x00, 0xff, 0x00, 0xff}
+	}
+
+	donburi.SetValue(entry, component.Text,
+		component.TextData{
+			Text:     multiplierStr,
+			X:        100,
+			Y:        300,
+			FontFace: util.FontManager.Go108,
+			Color:    multiplierColor,
+		})
+
+	donburi.SetValue(entry, component.Expiration,
+		component.ExpirationData{
+			TTL: time.Second,
+		})
 }
