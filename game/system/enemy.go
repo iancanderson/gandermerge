@@ -123,7 +123,17 @@ func (h *hitpointsBar) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 func (e *enemy) Startup(ecs *ecs.ECS) {
 	//TODO: share these with orb_spawner?
 	e.images = loadEnergyTypeImages()
+	e.spawnEnemy(ecs)
+}
 
+func (e *enemy) NewGame(ecs *ecs.ECS) {
+	e.sprites.EachEntity(ecs.World, func(entry *donburi.Entry) {
+		ecs.World.Remove(entry.Entity())
+	})
+	e.spawnEnemy(ecs)
+}
+
+func (e *enemy) spawnEnemy(ecs *ecs.ECS) {
 	entity := ecs.Create(
 		layers.LayerEnemy,
 		component.Energy,

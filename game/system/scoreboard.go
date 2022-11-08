@@ -85,7 +85,7 @@ func (s *scoreboard) Update(ecs *ecs.ECS) {
 				s.playAgainPressed = false
 				s.inputSource = nil
 				score.NewGame()
-				Enemy.Startup(ecs)
+				Enemy.NewGame(ecs)
 			}
 		}
 	}
