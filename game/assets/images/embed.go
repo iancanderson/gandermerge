@@ -15,6 +15,9 @@ var (
 	//go:embed ghost.png
 	Ghost_png []byte
 
+	//go:embed information.png
+	Information_png []byte
+
 	//go:embed poison.png
 	Poison_png []byte
 
