@@ -5,6 +5,11 @@ import (
 )
 
 var (
+	//go:embed fire-chain.ogg
+	FireChain []byte
+	//go:embed fire-merge.ogg
+	FireMerge []byte
+
 	//go:embed ghost-chain.ogg
 	GhostChain []byte
 	//go:embed ghost-merge.ogg

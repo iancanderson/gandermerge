@@ -26,6 +26,7 @@ func (s *SoundManager) LoadSounds() {
 	audioContext := audio.NewContext(config.AudioSampleRate)
 
 	chainSoundData := map[core.EnergyType][]byte{
+		core.Fire:    sounds.FireChain,
 		core.Ghost:   sounds.GhostChain,
 		core.Poison:  sounds.PoisonChain,
 		core.Psychic: sounds.PsychicChain,
@@ -34,6 +35,7 @@ func (s *SoundManager) LoadSounds() {
 	s.chainSounds = loadSounds(chainSoundData, audioContext)
 
 	mergeSoundData := map[core.EnergyType][]byte{
+		core.Fire:    sounds.FireMerge,
 		core.Ghost:   sounds.GhostMerge,
 		core.Poison:  sounds.PoisonMerge,
 		core.Psychic: sounds.PsychicMerge,
