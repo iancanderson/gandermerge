@@ -7,5 +7,6 @@ const (
 	LayerOrbs
 	LayerEnemy
 	LayerScoreboard
+	LayerModal
 	LayerMetrics
 )

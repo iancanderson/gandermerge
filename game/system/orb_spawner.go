@@ -1,10 +1,6 @@
 package system
 
 import (
-	"bytes"
-	"image"
-	"log"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/iancanderson/spookypaths/game/assets/images"
 	"github.com/iancanderson/spookypaths/game/component"
@@ -81,18 +77,10 @@ func (s *OrbSpawner) spawnOrb(ecs *ecs.ECS, col, row int) {
 
 func loadEnergyTypeImages() map[core.EnergyType]*ebiten.Image {
 	return map[core.EnergyType]*ebiten.Image{
-		core.Electric: loadImage(images.Electric_png),
-		core.Fire:     loadImage(images.Fire_png),
-		core.Ghost:    loadImage(images.Ghost_png),
-		core.Poison:   loadImage(images.Poison_png),
-		core.Psychic:  loadImage(images.Psychic_png),
+		core.Electric: util.LoadImage(images.Electric_png),
+		core.Fire:     util.LoadImage(images.Fire_png),
+		core.Ghost:    util.LoadImage(images.Ghost_png),
+		core.Poison:   util.LoadImage(images.Poison_png),
+		core.Psychic:  util.LoadImage(images.Psychic_png),
 	}
-}
-
-func loadImage(data []byte) *ebiten.Image {
-	img, _, err := image.Decode(bytes.NewReader(data))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return ebiten.NewImageFromImage(img)
 }

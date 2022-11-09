@@ -44,6 +44,7 @@ func NewGame() *Game {
 
 	system.Enemy.Startup(g.ecs)
 	system.Input.Startup(g.ecs)
+	system.Modal.Startup(g.ecs)
 
 	g.ecs.AddSystem(system.Input.Update)
 	g.ecs.AddSystem(system.GridGravity.Update)
@@ -56,6 +57,8 @@ func NewGame() *Game {
 	g.ecs.AddSystem(system.Scoreboard.Update)
 	g.ecs.AddRenderer(layers.LayerScoreboard, system.Scoreboard.Draw)
 	g.ecs.AddSystem(system.Expirator.Update)
+	g.ecs.AddSystem(system.Modal.Update)
+	g.ecs.AddRenderer(layers.LayerModal, system.Modal.Draw)
 
 	return g
 }
