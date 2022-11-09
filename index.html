@@ -11,7 +11,7 @@
 
   const go = new Go();
   WebAssembly.instantiateStreaming(
-    fetch("gandermerge.wasm"),
+    fetch("spookypaths.wasm"),
     go.importObject
   ).then((result) => {
     go.run(result.instance);
