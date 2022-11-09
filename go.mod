@@ -1,4 +1,4 @@
-module github.com/iancanderson/gandermerge
+module github.com/iancanderson/spookypaths
 
 go 1.19
 

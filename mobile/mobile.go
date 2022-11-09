@@ -1,9 +1,9 @@
-package gandermergemobile
+package spookypathsmobile
 
 import (
 	"github.com/hajimehoshi/ebiten/v2/mobile"
 
-	"github.com/iancanderson/gandermerge/game"
+	"github.com/iancanderson/spookypaths/game"
 )
 
 func init() {

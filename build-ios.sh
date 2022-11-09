@@ -1,2 +1,2 @@
 #! /bin/bash
-ebitenmobile bind -target ios -o ./mobile/ios/Gandermerge.xcframework ./mobile
+ebitenmobile bind -target ios -o ./mobile/ios/Spookypaths.xcframework ./mobile

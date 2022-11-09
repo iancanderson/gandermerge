@@ -2,8 +2,8 @@ package system
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/iancanderson/gandermerge/game/component"
-	"github.com/iancanderson/gandermerge/game/layers"
+	"github.com/iancanderson/spookypaths/game/component"
+	"github.com/iancanderson/spookypaths/game/layers"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"

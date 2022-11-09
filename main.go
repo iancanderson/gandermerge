@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/iancanderson/gandermerge/game"
-	"github.com/iancanderson/gandermerge/game/config"
+	"github.com/iancanderson/spookypaths/game"
+	"github.com/iancanderson/spookypaths/game/config"
 )
 
 func main() {
-	ebiten.SetWindowTitle("Gandermerge")
+	ebiten.SetWindowTitle("Spookypaths")
 
 	ebiten.SetWindowSize(config.WindowWidth, config.WindowHeight)
 	ebiten.SetWindowSizeLimits(300, 200, -1, -1)

@@ -1,7 +1,7 @@
 package component
 
 import (
-	"github.com/iancanderson/gandermerge/game/config"
+	"github.com/iancanderson/spookypaths/game/config"
 	"github.com/yohamta/donburi"
 )
 

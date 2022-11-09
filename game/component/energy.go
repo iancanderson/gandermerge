@@ -3,7 +3,7 @@ package component
 import (
 	"math/rand"
 
-	"github.com/iancanderson/gandermerge/game/core"
+	"github.com/iancanderson/spookypaths/game/core"
 	"github.com/yohamta/donburi"
 )
 

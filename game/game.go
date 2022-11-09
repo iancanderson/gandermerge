@@ -2,10 +2,10 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/iancanderson/gandermerge/game/config"
-	"github.com/iancanderson/gandermerge/game/layers"
-	"github.com/iancanderson/gandermerge/game/system"
-	"github.com/iancanderson/gandermerge/game/util"
+	"github.com/iancanderson/spookypaths/game/config"
+	"github.com/iancanderson/spookypaths/game/layers"
+	"github.com/iancanderson/spookypaths/game/system"
+	"github.com/iancanderson/spookypaths/game/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 )

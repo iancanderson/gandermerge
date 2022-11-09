@@ -5,9 +5,9 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
-	"github.com/iancanderson/gandermerge/game/assets/sounds"
-	"github.com/iancanderson/gandermerge/game/config"
-	"github.com/iancanderson/gandermerge/game/core"
+	"github.com/iancanderson/spookypaths/game/assets/sounds"
+	"github.com/iancanderson/spookypaths/game/config"
+	"github.com/iancanderson/spookypaths/game/core"
 )
 
 type SoundManager struct {

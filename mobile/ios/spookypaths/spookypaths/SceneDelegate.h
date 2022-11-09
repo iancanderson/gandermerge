@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.h
-//  gandermerge
+//  spookypaths
 //
 //  Created by Ian Anderson on 11/4/22.
 //
