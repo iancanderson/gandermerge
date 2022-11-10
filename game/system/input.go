@@ -226,9 +226,7 @@ func (r *input) hitEnemy(ecs *ecs.ECS, world donburi.World) {
 			enemyEnergyType := component.Energy.Get(enemyEntry).EnergyType
 			attackStrength := core.ScaleAttack(energyEmitted, r.chain.energyType, enemyEnergyType)
 			component.Hitpoints.Get(enemyEntry).Hitpoints -= attackStrength
-
-			multiplier := core.AttackMultiplier(r.chain.energyType, enemyEnergyType)
-			spawnBubbleText(ecs, world, multiplier)
+			spawnBubbleText(ecs, world, attackStrength)
 		}
 	}
 }
@@ -256,15 +254,17 @@ func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) 
 	})
 }
 
-func spawnBubbleText(ecs *ecs.ECS, world donburi.World, multiplier float64) {
+func spawnBubbleText(ecs *ecs.ECS, world donburi.World, attackStrength int) {
 	entity := ecs.Create(layers.LayerEnemy, component.Text, component.Expiration)
 	entry := ecs.World.Entry(entity)
 
 	text := ""
-	if multiplier == 0.5 {
-		text = "Meh."
-	} else if multiplier == 2 {
-		text = "Ouch!"
+	if attackStrength <= 3 {
+		text = "Meh"
+	} else if attackStrength >= 10 {
+		text = "OUCH"
+	} else if attackStrength >= 7 {
+		text = "Ouch"
 	}
 
 	component.Text.Set(entry, &component.TextData{
