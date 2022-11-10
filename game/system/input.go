@@ -247,14 +247,13 @@ func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) 
 		multiplierColor = color.RGBA{0x00, 0xff, 0x00, 0xff}
 	}
 
-	donburi.SetValue(entry, component.Text,
-		component.TextData{
-			Text:     multiplierStr,
-			X:        100,
-			Y:        300,
-			FontFace: util.FontManager.Go108,
-			Color:    multiplierColor,
-		})
+	component.Text.Set(entry, &component.TextData{
+		Text:     multiplierStr,
+		X:        100,
+		Y:        300,
+		FontFace: util.FontManager.Go108,
+		Color:    multiplierColor,
+	})
 }
 
 func spawnBubbleText(ecs *ecs.ECS, world donburi.World, multiplier float64) {
@@ -268,18 +267,16 @@ func spawnBubbleText(ecs *ecs.ECS, world donburi.World, multiplier float64) {
 		text = "Ouch!"
 	}
 
-	donburi.SetValue(entry, component.Text,
-		component.TextData{
-			Text:     text,
-			X:        600,
-			Y:        230,
-			FontFace: util.FontManager.Go36,
-			Color:    color.Black,
-			Bubble:   component.BubbleLeft,
-		})
+	component.Text.Set(entry, &component.TextData{
+		Text:     text,
+		X:        600,
+		Y:        230,
+		FontFace: util.FontManager.Go36,
+		Color:    color.Black,
+		Bubble:   component.BubbleLeft,
+	})
 
-	donburi.SetValue(entry, component.Expiration,
-		component.ExpirationData{
-			TTL: time.Second,
-		})
+	component.Expiration.Set(entry, &component.ExpirationData{
+		TTL: time.Second,
+	})
 }

@@ -32,7 +32,7 @@ func (s *scorer) Startup(ecs *ecs.ECS) {
 	entity := ecs.Create(layers.LayerScoreboard, component.Score)
 	entry := ecs.World.Entry(entity)
 
-	donburi.SetValue(entry, component.Score, component.ScoreData{
+	component.Score.Set(entry, &component.ScoreData{
 		MovesRemaining: config.MovesAllowed,
 		EnemiesAreDead: false,
 	})

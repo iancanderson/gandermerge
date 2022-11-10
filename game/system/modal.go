@@ -57,11 +57,11 @@ func (m *modal) spawnInfoButton(ecs *ecs.ECS) {
 		component.InfoButton,
 	)
 	entry := ecs.World.Entry(info)
-	component.Sprite.SetValue(entry, component.SpriteData{
-		Image: util.LoadImage(images.Information_png),
-		X:     config.WindowWidth - 100,
-		Y:     10,
-	}.WithScale(0.15))
+	component.Sprite.Set(entry, component.NewSpriteData(
+		util.LoadImage(images.Information_png),
+		config.WindowWidth-100,
+		10,
+	).WithScale(0.15))
 }
 
 func (m *modal) Update(ecs *ecs.ECS) {

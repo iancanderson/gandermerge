@@ -140,23 +140,20 @@ func (e *enemy) spawnEnemy(ecs *ecs.ECS) {
 	entry := ecs.World.Entry(entity)
 
 	energyType := component.RandomEnergyType()
-	donburi.SetValue(entry, component.Energy,
-		component.EnergyData{
-			EnergyType: energyType,
-		})
+	component.Energy.Set(entry, &component.EnergyData{
+		EnergyType: energyType,
+	})
 
-	donburi.SetValue(entry, component.Sprite,
-		component.SpriteData{
-			Image: e.images[energyType],
-			X:     config.WindowWidth/2 - enemyWidth/2,
-			Y:     100,
-		}.WithScale(0.5).WithGreenTint(energyType == core.Poison).WithRedTint(energyType == core.Fire))
+	component.Sprite.Set(entry, component.NewSpriteData(
+		e.images[energyType],
+		config.WindowWidth/2-enemyWidth/2,
+		100,
+	).WithScale(0.5).WithGreenTint(energyType == core.Poison).WithRedTint(energyType == core.Fire))
 
-	donburi.SetValue(entry, component.Hitpoints,
-		component.HitpointsData{
-			MaxHitpoints: config.EnemyHitpoints,
-			Hitpoints:    config.EnemyHitpoints,
-		})
+	component.Hitpoints.Set(entry, &component.HitpointsData{
+		MaxHitpoints: config.EnemyHitpoints,
+		Hitpoints:    config.EnemyHitpoints,
+	})
 
 	HitpointsBar.hide = false
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/iancanderson/spookypaths/game/core"
 	"github.com/iancanderson/spookypaths/game/layers"
 	"github.com/iancanderson/spookypaths/game/util"
-	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 )
 
@@ -56,23 +55,20 @@ func (s *OrbSpawner) spawnOrb(ecs *ecs.ECS, col, row int) {
 	entry := ecs.World.Entry(orb)
 
 	energyType := component.RandomEnergyType()
-	donburi.SetValue(entry, component.Energy,
-		component.EnergyData{
-			EnergyType: energyType,
-		})
+	component.Energy.Set(entry, &component.EnergyData{
+		EnergyType: energyType,
+	})
 
-	donburi.SetValue(entry, component.Sprite,
-		component.SpriteData{
-			Image: s.images[energyType],
-			X:     4 + float64(col)*config.ColumnWidth,
-			Y:     4 + util.GridYPosition(row) + spawnYOffset,
-		}.WithScale(0.14).WithGreenTint(energyType == core.Poison).WithRedTint(energyType == core.Fire))
+	component.Sprite.Set(entry, component.NewSpriteData(
+		s.images[energyType],
+		4+float64(col)*config.ColumnWidth,
+		4+util.GridYPosition(row)+spawnYOffset,
+	).WithScale(0.14).WithGreenTint(energyType == core.Poison).WithRedTint(energyType == core.Fire))
 
-	donburi.SetValue(entry, component.GridPosition,
-		component.GridPositionData{
-			Row: row,
-			Col: col,
-		})
+	component.GridPosition.Set(entry, &component.GridPositionData{
+		Row: row,
+		Col: col,
+	})
 }
 
 func loadEnergyTypeImages() map[core.EnergyType]*ebiten.Image {

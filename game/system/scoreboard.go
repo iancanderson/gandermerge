@@ -120,11 +120,12 @@ func spawnPlayAgainButton(ecs *ecs.ECS) *donburi.Entry {
 	entity := ecs.Create(layers.LayerScoreboard, component.Sprite)
 	entry := ecs.World.Entry(entity)
 
-	donburi.SetValue(entry, component.Sprite, component.SpriteData{
-		Image: ebiten.NewImage(buttonWidth, buttonHeight),
-		X:     config.WindowWidth/2 - buttonWidth/2,
-		Y:     config.WindowHeight / 2,
-	}.WithScale(1.0))
+	component.Sprite.Set(entry, component.NewSpriteData(
+		ebiten.NewImage(buttonWidth, buttonHeight),
+		config.WindowWidth/2-buttonWidth/2,
+		config.WindowHeight/2,
+	))
+
 	return entry
 }
 
