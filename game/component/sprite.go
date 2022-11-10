@@ -42,6 +42,14 @@ func (s *spriteData) In(x, y int) bool {
 	return imagePt.In(s.Image.Bounds())
 }
 
+// Is the given point within 10 pixels of the sprite?
+func (s *spriteData) CloseTo(x, y int) bool {
+	imagePt := s.worldToImage(x, y)
+	// make a rectangle with x, y at the center
+	pointRect := image.Rect(imagePt.X-10, imagePt.Y-10, imagePt.X+10, imagePt.Y+10)
+	return pointRect.Overlaps(s.Image.Bounds())
+}
+
 func (s *spriteData) DrawOptions() *ebiten.DrawImageOptions {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(s.scale, s.scale)

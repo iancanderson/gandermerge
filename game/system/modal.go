@@ -75,7 +75,7 @@ func (m *modal) Update(ecs *ecs.ECS) {
 	}
 	if m.inputSource != nil {
 		inputX, inputY := m.inputSource.Position()
-		if buttonSprite.In(inputX, inputY) {
+		if buttonSprite.CloseTo(inputX, inputY) {
 			m.infoButtonPressed = true
 		}
 
