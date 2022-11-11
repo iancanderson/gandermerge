@@ -1,4 +1,4 @@
-package util
+package assets
 
 import (
 	"bytes"
@@ -10,19 +10,20 @@ import (
 	"github.com/iancanderson/spookypaths/game/core"
 )
 
-type SoundManager struct {
+type soundManager struct {
 	chainSounds map[core.EnergyType]*audio.Player
 	mergeSounds map[core.EnergyType]*audio.Player
 }
 
-func NewSoundManager() *SoundManager {
-	return &SoundManager{
-		chainSounds: make(map[core.EnergyType]*audio.Player),
-		mergeSounds: make(map[core.EnergyType]*audio.Player),
-	}
+// Make sure it conforms to the Manager interface
+var _ Manager = (*soundManager)(nil)
+
+var SoundManager = &soundManager{
+	chainSounds: make(map[core.EnergyType]*audio.Player),
+	mergeSounds: make(map[core.EnergyType]*audio.Player),
 }
 
-func (s *SoundManager) LoadSounds() {
+func (s *soundManager) Load() {
 	audioContext := audio.NewContext(config.AudioSampleRate)
 
 	chainSoundData := map[core.EnergyType][]byte{
@@ -62,7 +63,7 @@ func loadSounds(soundData map[core.EnergyType][]byte, audioContext *audio.Contex
 	return sounds
 }
 
-func (s *SoundManager) PlayChainSound(energyType core.EnergyType) {
+func (s *soundManager) PlayChain(energyType core.EnergyType) {
 	player := s.chainSounds[energyType]
 	if player == nil {
 		return
@@ -71,7 +72,7 @@ func (s *SoundManager) PlayChainSound(energyType core.EnergyType) {
 	player.Play()
 }
 
-func (s *SoundManager) PauseChainSound(energyType core.EnergyType) {
+func (s *soundManager) PauseChain(energyType core.EnergyType) {
 	player := s.chainSounds[energyType]
 	if player == nil {
 		return
@@ -79,7 +80,7 @@ func (s *SoundManager) PauseChainSound(energyType core.EnergyType) {
 	player.Pause()
 }
 
-func (s *SoundManager) PlayMergeSound(energyType core.EnergyType) {
+func (s *soundManager) PlayMerge(energyType core.EnergyType) {
 	player := s.mergeSounds[energyType]
 	if player == nil {
 		return

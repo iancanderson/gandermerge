@@ -1,11 +1,6 @@
 package util
 
 import (
-	"bytes"
-	"image"
-	"log"
-
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/iancanderson/spookypaths/game/component"
 	"github.com/iancanderson/spookypaths/game/config"
 	"github.com/iancanderson/spookypaths/game/layers"
@@ -43,12 +38,4 @@ func buildQuery() *query.Query {
 
 func GridYPosition(row int) float64 {
 	return float64(row)*config.RowHeight + config.OrbGridTopMargin
-}
-
-func LoadImage(data []byte) *ebiten.Image {
-	img, _, err := image.Decode(bytes.NewReader(data))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return ebiten.NewImageFromImage(img)
 }

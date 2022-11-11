@@ -1,11 +1,15 @@
 package game
 
 import (
+	"fmt"
+	"sync"
+	"time"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/iancanderson/spookypaths/game/assets"
 	"github.com/iancanderson/spookypaths/game/config"
 	"github.com/iancanderson/spookypaths/game/layers"
 	"github.com/iancanderson/spookypaths/game/system"
-	"github.com/iancanderson/spookypaths/game/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/ecs"
 )
@@ -34,7 +38,8 @@ func NewGame() *Game {
 	g := &Game{
 		ecs: createECS(),
 	}
-	util.FontManager.Startup(g.ecs)
+
+	loadAssets()
 
 	orbSpawner := system.NewOrbSpawner()
 	orbSpawner.Startup(g.ecs)
@@ -43,7 +48,6 @@ func NewGame() *Game {
 	scorer.Startup(g.ecs)
 
 	system.Enemy.Startup(g.ecs)
-	system.Input.Startup(g.ecs)
 	system.Modal.Startup(g.ecs)
 
 	g.ecs.AddSystem(system.Input.Update)
@@ -72,4 +76,27 @@ func createECS() *ecs.ECS {
 func createWorld() donburi.World {
 	world := donburi.NewWorld()
 	return world
+}
+
+func loadAssets() {
+	start := time.Now()
+
+	var wg sync.WaitGroup
+	wg.Add(3)
+
+	var assetManagers []assets.Manager = []assets.Manager{
+		assets.FontManager,
+		assets.ImageManager,
+		assets.SoundManager,
+	}
+
+	for _, assetManager := range assetManagers {
+		go func(assetManager assets.Manager) {
+			defer wg.Done()
+			assetManager.Load()
+		}(assetManager)
+	}
+
+	wg.Wait()
+	fmt.Printf("Loaded assets in %v ms\n", time.Since(start).Milliseconds())
 }

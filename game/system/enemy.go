@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/iancanderson/spookypaths/game/assets"
 	"github.com/iancanderson/spookypaths/game/component"
 	"github.com/iancanderson/spookypaths/game/config"
 	"github.com/iancanderson/spookypaths/game/core"
@@ -18,7 +19,6 @@ import (
 
 type enemy struct {
 	hitpointsBar hitpointsBar
-	images       map[core.EnergyType]*ebiten.Image
 	scoreQuery   *query.Query
 	sprites      *query.Query
 	textQuery    *query.Query
@@ -118,8 +118,6 @@ func (h *hitpointsBar) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 }
 
 func (e *enemy) Startup(ecs *ecs.ECS) {
-	//TODO: share these with orb_spawner?
-	e.images = loadEnergyTypeImages()
 	e.spawnEnemy(ecs)
 }
 
@@ -145,7 +143,7 @@ func (e *enemy) spawnEnemy(ecs *ecs.ECS) {
 	})
 
 	component.Sprite.Set(entry, component.NewSpriteData(
-		e.images[energyType],
+		assets.EnergyImage(energyType),
 		config.WindowWidth/2-enemyWidth/2,
 		100,
 	).WithScale(0.5).WithGreenTint(energyType == core.Poison).WithRedTint(energyType == core.Fire))
@@ -176,7 +174,6 @@ func (e *enemy) Update(ecs *ecs.ECS) {
 }
 
 func (e *enemy) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
-	// TODO: consolidate with render.go
 	e.sprites.EachEntity(ecs.World, func(entry *donburi.Entry) {
 		sprite := component.Sprite.Get(entry)
 		op := sprite.DrawOptions()

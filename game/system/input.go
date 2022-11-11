@@ -4,6 +4,7 @@ import (
 	"image/color"
 	"time"
 
+	"github.com/iancanderson/spookypaths/game/assets"
 	"github.com/iancanderson/spookypaths/game/component"
 	"github.com/iancanderson/spookypaths/game/config"
 	"github.com/iancanderson/spookypaths/game/core"
@@ -77,7 +78,6 @@ type input struct {
 	selectableQuery     *query.Query
 	enemyQuery          *query.Query
 	multiplierTextQuery *query.Query
-	soundManager        *util.SoundManager
 }
 
 var Input = &input{
@@ -103,11 +103,6 @@ var Input = &input{
 		filter.Contains(
 			component.Score,
 		)),
-	soundManager: util.NewSoundManager(),
-}
-
-func (r *input) Startup(ecs *ecs.ECS) {
-	r.soundManager.LoadSounds()
 }
 
 func (r *input) Update(ecs *ecs.ECS) {
@@ -154,7 +149,7 @@ func (r *input) handleInputPressed(ecs *ecs.ECS) {
 			r.chain = r.createOrbChain(entry)
 			selectable := component.Selectable.Get(entry)
 			selectable.Selected = true
-			r.soundManager.PlayChainSound(r.chain.energyType)
+			assets.SoundManager.PlayChain(r.chain.energyType)
 
 			enemyEntry, ok := r.enemyQuery.FirstEntity(ecs.World)
 			if ok {
@@ -185,8 +180,8 @@ func (r *input) clearOrbChain(ecs *ecs.ECS, world donburi.World) {
 	}
 
 	if r.chain.CanBeMerged() {
-		r.soundManager.PauseChainSound(r.chain.energyType)
-		r.soundManager.PlayMergeSound(r.chain.energyType)
+		assets.SoundManager.PauseChain(r.chain.energyType)
+		assets.SoundManager.PlayMerge(r.chain.energyType)
 		r.hitEnemy(ecs, world)
 		donburi.Add(multiplierText, component.Expiration,
 			&component.ExpirationData{
@@ -207,7 +202,7 @@ func (r *input) clearOrbChain(ecs *ecs.ECS, world donburi.World) {
 			selectable.Selected = false
 		}
 
-		r.soundManager.PauseChainSound(r.chain.energyType)
+		assets.SoundManager.PauseChain(r.chain.energyType)
 		multiplierText.Remove()
 	}
 
@@ -249,7 +244,7 @@ func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) 
 		Text:     multiplierStr,
 		X:        100,
 		Y:        300,
-		FontFace: util.FontManager.Go108,
+		FontFace: assets.FontManager.Go108,
 		Color:    multiplierColor,
 	})
 }
@@ -271,7 +266,7 @@ func spawnBubbleText(ecs *ecs.ECS, world donburi.World, attackStrength int) {
 		Text:     text,
 		X:        600,
 		Y:        230,
-		FontFace: util.FontManager.Go36,
+		FontFace: assets.FontManager.Go36,
 		Color:    color.Black,
 		Bubble:   component.BubbleLeft,
 	})

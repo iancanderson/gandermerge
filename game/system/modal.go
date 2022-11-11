@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/iancanderson/spookypaths/game/assets"
 	"github.com/iancanderson/spookypaths/game/assets/images"
 	"github.com/iancanderson/spookypaths/game/component"
 	"github.com/iancanderson/spookypaths/game/config"
@@ -58,7 +59,7 @@ func (m *modal) spawnInfoButton(ecs *ecs.ECS) {
 	)
 	entry := ecs.World.Entry(info)
 	component.Sprite.Set(entry, component.NewSpriteData(
-		util.LoadImage(images.Information_png),
+		assets.LoadImage(images.Information_png),
 		config.WindowWidth-100,
 		10,
 	).WithScale(0.15))
@@ -103,7 +104,7 @@ func (m *modal) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		bg := ebiten.NewImage(config.WindowWidth, config.WindowHeight)
 		bg.Fill(color.White)
 		screen.DrawImage(bg, nil)
-		text.Draw(screen, modalEntry.Text, util.FontManager.Go36, 40, 70, color.Black)
+		text.Draw(screen, modalEntry.Text, assets.FontManager.Go36, 40, 70, color.Black)
 	}
 	m.drawInfoButton(ecs, screen)
 }

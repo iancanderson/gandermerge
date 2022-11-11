@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/iancanderson/spookypaths/game/assets"
 	"github.com/iancanderson/spookypaths/game/component"
 	"github.com/iancanderson/spookypaths/game/config"
 	"github.com/iancanderson/spookypaths/game/layers"
@@ -48,7 +49,7 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
 	score := component.Score.Get(scoreEntry)
 
-	fontface := util.FontManager.Go36
+	fontface := assets.FontManager.Go36
 	var movesLeftColor color.Color = color.RGBA{0x00, 0xff, 0x00, 0xff}
 	if score.MovesRemaining <= 5 {
 		movesLeftColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
@@ -136,7 +137,7 @@ func (s *scoreboard) drawPlayAgainButton(ecs *ecs.ECS, screen *ebiten.Image) {
 	}
 	sprite := component.Sprite.Get(playButtonEntry)
 	ebitenutil.DrawRect(sprite.Image, 0, 0, buttonWidth, buttonHeight, color.RGBA{0x00, 0xff, 0x00, 0xff})
-	text.Draw(sprite.Image, "Play again", util.FontManager.Go36, 10, 40, color.Black)
+	text.Draw(sprite.Image, "Play again", assets.FontManager.Go36, 10, 40, color.Black)
 
 	op := sprite.DrawOptions()
 	screen.DrawImage(sprite.Image, op)
