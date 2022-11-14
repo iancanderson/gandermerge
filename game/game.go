@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"math/rand"
 	"sync"
 	"time"
 
@@ -35,6 +36,8 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func NewGame() *Game {
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	g := &Game{
 		ecs: createECS(),
 	}
