@@ -43,13 +43,10 @@ func (b *Button) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 		})
 	}
 
-	fontface := assets.FontManager.Go36
+	fontface := assets.FontManager.Creepster72
 	textBounds := text.BoundString(fontface, b.Text)
 	xOffset := frame.Dx()/2 - textBounds.Dx()/2
 	yOffset := frame.Dy()/2 + textBounds.Dy()/2
-
-	// Not sure why we need to do this
-	yOffset -= 8
 
 	text.Draw(screen, b.Text, fontface, frame.Min.X+xOffset, frame.Min.Y+yOffset, color.White)
 }

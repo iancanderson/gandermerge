@@ -2,14 +2,18 @@ package game
 
 import (
 	"fmt"
+	"image"
+	"image/color"
 	"sync"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/iancanderson/spookypaths/game/assets"
 	"github.com/iancanderson/spookypaths/game/config"
 	"github.com/iancanderson/spookypaths/game/uicomponent"
 	"github.com/yohamta/furex/v2"
+	"golang.org/x/image/font"
 )
 
 type MainMenuScreen struct {
@@ -44,6 +48,23 @@ func (g *MainMenuScreen) Update() error {
 	return nil
 }
 
+type TextComponent struct {
+	str      string
+	fontface font.Face
+}
+
+func (textComponent *TextComponent) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
+	fontface := textComponent.fontface
+	textBounds := text.BoundString(fontface, textComponent.str)
+	xOffset := frame.Dx()/2 - textBounds.Dx()/2
+	yOffset := frame.Dy()/2 + textBounds.Dy()/2
+
+	// Not sure why we need to do this
+	yOffset -= 8
+
+	text.Draw(screen, textComponent.str, fontface, frame.Min.X+xOffset, frame.Min.Y+yOffset, color.White)
+}
+
 func (g *MainMenuScreen) setupMenuUI() {
 	g.gameUI = &furex.View{
 		Width:        config.WindowWidth,
@@ -56,8 +77,20 @@ func (g *MainMenuScreen) setupMenuUI() {
 	}
 
 	g.gameUI.AddChild(&furex.View{
+		Width:   config.WindowWidth - 100,
+		Height:  120,
+		Handler: &TextComponent{fontface: assets.FontManager.Creepster160, str: "Spooky"},
+	})
+	g.gameUI.AddChild(&furex.View{
+		Width:        config.WindowWidth - 100,
+		Height:       140,
+		Handler:      &TextComponent{fontface: assets.FontManager.Creepster200, str: "Paths"},
+		MarginBottom: 200,
+	})
+
+	g.gameUI.AddChild(&furex.View{
 		MarginBottom: 20,
-		Width:        400,
+		Width:        600,
 		Height:       100,
 		Handler: &uicomponent.Button{
 			Text:    "Play random game",
@@ -67,7 +100,7 @@ func (g *MainMenuScreen) setupMenuUI() {
 
 	g.gameUI.AddChild(&furex.View{
 		MarginBottom: 20,
-		Width:        400,
+		Width:        600,
 		Height:       100,
 		Handler: &uicomponent.Button{
 			Text:    "Play daily game",
