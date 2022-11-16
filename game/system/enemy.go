@@ -35,7 +35,7 @@ var Enemy = &enemy{
 			component.Sprite,
 		)),
 	scoreQuery: ecs.NewQuery(
-		layers.LayerScoreboard,
+		layers.LayerUI,
 		filter.Contains(
 			component.Score,
 		)),

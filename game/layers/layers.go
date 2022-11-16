@@ -6,7 +6,7 @@ const (
 	LayerBackground ecs.LayerID = iota
 	LayerOrbs
 	LayerEnemy
-	LayerScoreboard
+	LayerUI
 	LayerModal
 	LayerMetrics
 )

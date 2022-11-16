@@ -8,6 +8,8 @@ require (
 	golang.org/x/image v0.1.0
 )
 
+require golang.org/x/exp/shiny v0.0.0-20221012211006-4de253d81b95 // indirect
+
 require (
 	github.com/ebitengine/purego v0.2.0-alpha.0.20220915044048-aa1b0f680473 // indirect
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20220806181222-55e207c401ad // indirect
@@ -16,6 +18,7 @@ require (
 	github.com/jezek/xgb v1.0.1 // indirect
 	github.com/jfreymuth/oggvorbis v1.0.4 // indirect
 	github.com/jfreymuth/vorbis v1.0.2 // indirect
+	github.com/yohamta/furex/v2 v2.1.7
 	golang.org/x/exp v0.0.0-20221031165847-c99f073a8326 // indirect
 	golang.org/x/mobile v0.0.0-20221012134814-c746ac228303 // indirect
 	golang.org/x/sys v0.1.0 // indirect

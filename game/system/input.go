@@ -99,7 +99,7 @@ var Input = &input{
 			component.GridPosition,
 		)),
 	scoreQuery: ecs.NewQuery(
-		layers.LayerScoreboard,
+		layers.LayerUI,
 		filter.Contains(
 			component.Score,
 		)),

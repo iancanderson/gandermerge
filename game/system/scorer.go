@@ -17,7 +17,7 @@ type scorer struct {
 
 var Scorer = &scorer{
 	scoreQuery: ecs.NewQuery(
-		layers.LayerScoreboard,
+		layers.LayerUI,
 		filter.Contains(
 			component.Score,
 		)),
@@ -29,7 +29,7 @@ var Scorer = &scorer{
 }
 
 func (s *scorer) Startup(ecs *ecs.ECS) {
-	entity := ecs.Create(layers.LayerScoreboard, component.Score)
+	entity := ecs.Create(layers.LayerUI, component.Score)
 	entry := ecs.World.Entry(entity)
 
 	component.Score.Set(entry, &component.ScoreData{

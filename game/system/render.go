@@ -24,7 +24,7 @@ var Render = &render{
 			component.Selectable,
 		)),
 	scoreQuery: ecs.NewQuery(
-		layers.LayerScoreboard,
+		layers.LayerUI,
 		filter.Contains(
 			component.Score,
 		)),

@@ -31,11 +31,11 @@ const buttonWidth = 200.0
 var Scoreboard = &scoreboard{
 	playAgainPressed: false,
 	playButtonQuery: ecs.NewQuery(
-		layers.LayerScoreboard,
+		layers.LayerUI,
 		filter.Contains(component.Sprite),
 	),
 	scoreQuery: ecs.NewQuery(
-		layers.LayerScoreboard,
+		layers.LayerUI,
 		filter.Contains(
 			component.Score,
 		)),
@@ -118,7 +118,7 @@ func (s *scoreboard) findOrSpawnPlayAgainButton(ecs *ecs.ECS) *donburi.Entry {
 }
 
 func spawnPlayAgainButton(ecs *ecs.ECS) *donburi.Entry {
-	entity := ecs.Create(layers.LayerScoreboard, component.Sprite)
+	entity := ecs.Create(layers.LayerUI, component.Sprite)
 	entry := ecs.World.Entry(entity)
 
 	component.Sprite.Set(entry, component.NewSpriteData(
@@ -137,6 +137,7 @@ func (s *scoreboard) drawPlayAgainButton(ecs *ecs.ECS, screen *ebiten.Image) {
 	}
 	sprite := component.Sprite.Get(playButtonEntry)
 	ebitenutil.DrawRect(sprite.Image, 0, 0, buttonWidth, buttonHeight, color.RGBA{0x00, 0xff, 0x00, 0xff})
+	text.BoundString(assets.FontManager.Go36, "Play Again")
 	text.Draw(sprite.Image, "Play again", assets.FontManager.Go36, 10, 40, color.Black)
 
 	op := sprite.DrawOptions()
