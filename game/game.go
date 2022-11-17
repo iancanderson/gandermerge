@@ -35,10 +35,17 @@ func (g *game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func (g *game) startDailyLevel() {
 	today12am := time.Now().Truncate(24 * time.Hour)
-	g.screen = NewLevelScreen(today12am.UnixNano())
+	g.screen = NewLevelScreen(today12am.UnixNano(), g.backToMainMenu)
 }
 
 func (g *game) startRandomLevel() {
 	seed := time.Now().UTC().UnixNano()
-	g.screen = NewLevelScreen(seed)
+	g.screen = NewLevelScreen(seed, g.backToMainMenu)
+}
+
+func (g *game) backToMainMenu() {
+	g.screen = NewMainMenuScreen(
+		g.startDailyLevel,
+		g.startRandomLevel,
+	)
 }

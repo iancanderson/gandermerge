@@ -1,11 +1,8 @@
 package game
 
 import (
-	"fmt"
 	"image"
 	"image/color"
-	"sync"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
@@ -26,7 +23,6 @@ type StartDailyLevel func()
 type StartRandomLevel func()
 
 func NewMainMenuScreen(startDailyLevel StartDailyLevel, startRandomLevel StartRandomLevel) *MainMenuScreen {
-	loadAssets()
 	g := &MainMenuScreen{
 		startDailyLevel:  startDailyLevel,
 		startRandomLevel: startRandomLevel,
@@ -49,20 +45,20 @@ func (g *MainMenuScreen) Update() error {
 }
 
 type TextComponent struct {
-	str      string
+	Str      string
 	fontface font.Face
 }
 
 func (textComponent *TextComponent) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 	fontface := textComponent.fontface
-	textBounds := text.BoundString(fontface, textComponent.str)
+	textBounds := text.BoundString(fontface, textComponent.Str)
 	xOffset := frame.Dx()/2 - textBounds.Dx()/2
 	yOffset := frame.Dy()/2 + textBounds.Dy()/2
 
 	// Not sure why we need to do this
 	yOffset -= 8
 
-	text.Draw(screen, textComponent.str, fontface, frame.Min.X+xOffset, frame.Min.Y+yOffset, color.White)
+	text.Draw(screen, textComponent.Str, fontface, frame.Min.X+xOffset, frame.Min.Y+yOffset, color.White)
 }
 
 func (g *MainMenuScreen) setupMenuUI() {
@@ -79,12 +75,12 @@ func (g *MainMenuScreen) setupMenuUI() {
 	g.gameUI.AddChild(&furex.View{
 		Width:   config.WindowWidth - 100,
 		Height:  120,
-		Handler: &TextComponent{fontface: assets.FontManager.Creepster160, str: "Spooky"},
+		Handler: &TextComponent{fontface: assets.FontManager.Creepster160, Str: "Spooky"},
 	})
 	g.gameUI.AddChild(&furex.View{
 		Width:        config.WindowWidth - 100,
 		Height:       140,
-		Handler:      &TextComponent{fontface: assets.FontManager.Creepster200, str: "Paths"},
+		Handler:      &TextComponent{fontface: assets.FontManager.Creepster200, Str: "Paths"},
 		MarginBottom: 200,
 	})
 
@@ -107,27 +103,4 @@ func (g *MainMenuScreen) setupMenuUI() {
 			OnClick: g.startDailyLevel,
 		},
 	})
-}
-
-func loadAssets() {
-	start := time.Now()
-
-	var wg sync.WaitGroup
-	wg.Add(3)
-
-	var assetManagers []assets.Manager = []assets.Manager{
-		assets.FontManager,
-		assets.ImageManager,
-		assets.SoundManager,
-	}
-
-	for _, assetManager := range assetManagers {
-		go func(assetManager assets.Manager) {
-			defer wg.Done()
-			assetManager.Load()
-		}(assetManager)
-	}
-
-	wg.Wait()
-	fmt.Printf("Loaded assets in %v ms\n", time.Since(start).Milliseconds())
 }
