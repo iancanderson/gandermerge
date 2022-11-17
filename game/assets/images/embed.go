@@ -6,6 +6,21 @@ import (
 )
 
 var (
+	//go:embed christmas-electric.png
+	Christmas_electric_png []byte
+
+	//go:embed christmas-fire.png
+	Christmas_fire_png []byte
+
+	//go:embed christmas-ghost.png
+	Christmas_ghost_png []byte
+
+	//go:embed christmas-poison.png
+	Christmas_poison_png []byte
+
+	//go:embed christmas-psychic.png
+	Christmas_psychic_png []byte
+
 	//go:embed electric.png
 	Electric_png []byte
 

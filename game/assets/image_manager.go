@@ -12,8 +12,7 @@ import (
 )
 
 type imageManager struct {
-	energyImages             map[core.EnergyType]*ebiten.Image
-	thanksgivingEnergyImages map[core.EnergyType]*ebiten.Image
+	energyImages map[core.EnergyType]*ebiten.Image
 }
 
 // Make sure it conforms to the Manager interface
@@ -22,8 +21,22 @@ var _ Manager = (*imageManager)(nil)
 var ImageManager = &imageManager{}
 
 func (m *imageManager) Load() {
+	isChristmas := time.Now().Month() == time.December && time.Now().Day() == 25
+	isLastThursdayInNovember := time.Now().Month() == time.November &&
+		time.Now().Weekday() == time.Thursday &&
+		time.Now().Day() >= 24
+
+	if isChristmas {
+		m.energyImages = loadChristmasImages()
+		return
+	}
+
+	if isLastThursdayInNovember {
+		m.energyImages = loadThanksgivingImages()
+		return
+	}
+
 	m.energyImages = loadEnergyTypeImages()
-	m.thanksgivingEnergyImages = loadThanksgivingImages()
 }
 
 func loadEnergyTypeImages() map[core.EnergyType]*ebiten.Image {
@@ -46,16 +59,18 @@ func loadThanksgivingImages() map[core.EnergyType]*ebiten.Image {
 	}
 }
 
-func EnergyImage(energyType core.EnergyType) *ebiten.Image {
-	isLastThursdayInNovember := time.Now().Month() == time.November &&
-		time.Now().Weekday() == time.Thursday &&
-		time.Now().Day() >= 24
-
-	if isLastThursdayInNovember {
-		return ImageManager.thanksgivingEnergyImages[energyType]
-	} else {
-		return ImageManager.energyImages[energyType]
+func loadChristmasImages() map[core.EnergyType]*ebiten.Image {
+	return map[core.EnergyType]*ebiten.Image{
+		core.Electric: LoadImage(images.Christmas_electric_png),
+		core.Fire:     LoadImage(images.Christmas_fire_png),
+		core.Ghost:    LoadImage(images.Christmas_ghost_png),
+		core.Poison:   LoadImage(images.Christmas_poison_png),
+		core.Psychic:  LoadImage(images.Christmas_psychic_png),
 	}
+}
+
+func EnergyImage(energyType core.EnergyType) *ebiten.Image {
+	return ImageManager.energyImages[energyType]
 }
 
 func LoadImage(data []byte) *ebiten.Image {
