@@ -189,7 +189,9 @@ func (e *enemy) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 			ebitenutil.DrawCircle(screen, float64(textEntry.X+textRect.Dx()/2)-100, float64(textEntry.Y)-float64(textRect.Dy()/2)-70, radius/5, color.White)
 			ebitenutil.DrawCircle(screen, float64(textEntry.X+textRect.Dx()/2)-135, float64(textEntry.Y)-float64(textRect.Dy()/2)-40, radius/7, color.White)
 		}
-		text.Draw(screen, textEntry.Text, textEntry.FontFace, textEntry.X, textEntry.Y, textEntry.Color)
+		if textEntry.FontFace != nil {
+			text.Draw(screen, textEntry.Text, textEntry.FontFace, textEntry.X, textEntry.Y, textEntry.Color)
+		}
 	})
 
 	HitpointsBar.Draw(ecs, screen)
