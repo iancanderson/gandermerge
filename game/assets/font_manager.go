@@ -26,7 +26,7 @@ func (f *fontManager) Load() {
 	f.Creepster160 = truetype.NewFace(creepsterreg, &truetype.Options{Size: 160})
 	f.Creepster200 = truetype.NewFace(creepsterreg, &truetype.Options{Size: 200})
 
-	mona, err := truetype.Parse(fonts.Mona_Sans)
+	mona, err := truetype.Parse(fonts.Mona_Sans_Bold)
 	if err != nil {
 		panic(err)
 	}

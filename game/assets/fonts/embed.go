@@ -8,6 +8,6 @@ var (
 	//go:embed Creepster-regular.ttf
 	Creepster_regular []byte
 
-	//go:embed Mona-Sans.ttf
-	Mona_Sans []byte
+	//go:embed Mona-Sans-Bold.ttf
+	Mona_Sans_Bold []byte
 )
