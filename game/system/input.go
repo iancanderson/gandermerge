@@ -78,6 +78,7 @@ type input struct {
 	selectableQuery     *query.Query
 	enemyQuery          *query.Query
 	multiplierTextQuery *query.Query
+	modalQuery          *query.Query
 }
 
 var Input = &input{
@@ -103,9 +104,23 @@ var Input = &input{
 		filter.Contains(
 			component.Score,
 		)),
+	modalQuery: ecs.NewQuery(
+		layers.LayerModal,
+		filter.Contains(
+			component.Modal,
+		)),
 }
 
 func (r *input) Update(ecs *ecs.ECS) {
+	modal, ok := r.modalQuery.FirstEntity(ecs.World)
+	if !ok {
+		panic("no modal")
+	}
+	modalEntry := component.Modal.Get(modal)
+	if modalEntry.Active {
+		return
+	}
+
 	// Check if game is over
 	score, ok := r.scoreQuery.FirstEntity(ecs.World)
 	if ok && component.Score.Get(score).GameOver() {
