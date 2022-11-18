@@ -78,7 +78,8 @@ func (m *modal) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 		bg := ebiten.NewImage(config.WindowWidth, config.WindowHeight)
 		bg.Fill(color.White)
 		screen.DrawImage(bg, nil)
-		text.Draw(screen, modalEntry.Text, assets.FontManager.Mona36, 40, 70, color.Black)
+		text.Draw(screen, "Spooky Paths", assets.FontManager.Creepster72, 40, 100, color.Black)
+		text.Draw(screen, modalEntry.Text, assets.FontManager.Mona36, 40, 180, color.Black)
 	}
 
 	m.modalUI.Draw(screen)
