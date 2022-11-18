@@ -35,7 +35,7 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 
 	score := component.Score.Get(scoreEntry)
 
-	fontface := assets.FontManager.Go36
+	fontface := assets.FontManager.Mona36
 	var movesLeftColor color.Color = color.RGBA{0x00, 0xff, 0x00, 0xff}
 	if score.MovesRemaining <= 5 {
 		movesLeftColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
@@ -50,5 +50,5 @@ func (s *scoreboard) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	}
 	moves := fmt.Sprintf("%d %s left", score.MovesRemaining, movePluralized)
 	textWidth := text.BoundString(fontface, moves).Dx()
-	text.Draw(screen, moves, fontface, config.WindowWidth/2-textWidth/2, 60, movesLeftColor)
+	text.Draw(screen, moves, fontface, config.WindowWidth/2-textWidth/2, 80, movesLeftColor)
 }

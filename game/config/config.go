@@ -10,8 +10,7 @@ const OrbGridTopMargin = WindowHeight - (Rows * RowHeight)
 const MovesAllowed = 20
 const EnemyHitpoints = 140
 const AudioSampleRate = 44100
-const ModalText = "Welcome to Spooky Paths!\n\n" +
-	"Goal: defeat the boss before\nyou run out of moves.\n\n" +
+const ModalText = "Goal: defeat the boss before\nyou run out of moves.\n\n" +
 	"Attack: tap and drag to create\na path with the same type of energy,\nrelease to attack.\n\n" +
 	"Multipliers: different bosses are\naffected more or less by different\nenergy types:\n\n" +
 	"• 2x: boss takes double damage.\n" +

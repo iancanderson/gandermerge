@@ -244,7 +244,7 @@ func spawnMultiplierSign(ecs *ecs.ECS, world donburi.World, multiplier float64) 
 		Text:     multiplierStr,
 		X:        100,
 		Y:        300,
-		FontFace: assets.FontManager.Go108,
+		FontFace: assets.FontManager.Mona108,
 		Color:    multiplierColor,
 	})
 }
@@ -266,7 +266,7 @@ func spawnBubbleText(ecs *ecs.ECS, world donburi.World, attackStrength int) {
 		Text:     text,
 		X:        600,
 		Y:        230,
-		FontFace: assets.FontManager.Go36,
+		FontFace: assets.FontManager.Mona36,
 		Color:    color.Black,
 		Bubble:   component.BubbleLeft,
 	})

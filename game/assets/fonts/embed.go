@@ -7,4 +7,7 @@ import (
 var (
 	//go:embed Creepster-regular.ttf
 	Creepster_regular []byte
+
+	//go:embed Mona-Sans.ttf
+	Mona_Sans []byte
 )
