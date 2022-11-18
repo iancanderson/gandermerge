@@ -32,6 +32,7 @@ func (f *fontManager) Load() {
 	}
 	f.Mona36 = truetype.NewFace(mona, &truetype.Options{Size: 36})
 	f.Mona72 = truetype.NewFace(mona, &truetype.Options{Size: 72})
+	f.Mona108 = truetype.NewFace(mona, &truetype.Options{Size: 72})
 }
 
 // Make sure it conforms to the Manager interface
