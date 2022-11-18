@@ -299,6 +299,7 @@
 				DEVELOPMENT_TEAM = 9EB96S47P3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = spookypaths/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.puzzle-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -327,6 +328,7 @@
 				DEVELOPMENT_TEAM = 9EB96S47P3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = spookypaths/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.puzzle-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
