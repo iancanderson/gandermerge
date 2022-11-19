@@ -19,9 +19,11 @@ import (
 type modal struct {
 	modalQuery *query.Query
 	modalUI    *furex.View
+	bg         *ebiten.Image
 }
 
 var Modal = &modal{
+	bg: ebiten.NewImage(config.WindowWidth, config.WindowHeight),
 	modalQuery: ecs.NewQuery(
 		layers.LayerModal,
 		filter.Contains(
@@ -30,6 +32,8 @@ var Modal = &modal{
 }
 
 func (m *modal) Startup(ecs *ecs.ECS) {
+	m.bg.Fill(color.White)
+
 	modal := ecs.Create(
 		layers.LayerModal,
 		component.Modal,
@@ -75,9 +79,7 @@ func (m *modal) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	}
 	modalEntry := component.Modal.Get(modal)
 	if modalEntry.Active {
-		bg := ebiten.NewImage(config.WindowWidth, config.WindowHeight)
-		bg.Fill(color.White)
-		screen.DrawImage(bg, nil)
+		screen.DrawImage(m.bg, nil)
 		text.Draw(screen, "Spooky Paths", assets.FontManager.Creepster72, 40, 100, color.Black)
 		text.Draw(screen, modalEntry.Text, assets.FontManager.Mona36, 40, 180, color.Black)
 	}
