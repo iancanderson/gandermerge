@@ -16,6 +16,12 @@ import (
 	"github.com/yohamta/furex/v2"
 )
 
+var scoreQuery = ecs.NewQuery(
+	layers.LayerUI,
+	filter.Contains(
+		component.Score,
+	))
+
 type modal struct {
 	modalQuery *query.Query
 	modalUI    *furex.View
@@ -73,6 +79,11 @@ func (m *modal) Update(ecs *ecs.ECS) {
 }
 
 func (m *modal) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
+	score, ok := scoreQuery.FirstEntity(ecs.World)
+	if ok && component.Score.Get(score).GameOver() {
+		return
+	}
+
 	modal, ok := m.modalQuery.FirstEntity(ecs.World)
 	if !ok {
 		panic("no modal")
