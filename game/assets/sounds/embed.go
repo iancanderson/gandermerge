@@ -5,6 +5,9 @@ import (
 )
 
 var (
+	//go:embed bg-music-with-intro.ogg
+	BgMusicWithIntro []byte
+
 	//go:embed electric-chain.ogg
 	ElectricChain []byte
 	//go:embed electric-merge.ogg

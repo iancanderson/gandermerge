@@ -13,6 +13,7 @@ import (
 type soundManager struct {
 	chainSounds map[core.EnergyType]*audio.Player
 	mergeSounds map[core.EnergyType]*audio.Player
+	bgMusic     *audio.Player
 }
 
 // Make sure it conforms to the Manager interface
@@ -44,6 +45,18 @@ func (s *soundManager) Load() {
 		core.Psychic:  sounds.PsychicMerge,
 	}
 	s.mergeSounds = loadSounds(mergeSoundData, audioContext)
+
+	stream, err := vorbis.DecodeWithoutResampling(bytes.NewReader(sounds.BgMusicWithIntro))
+	if err != nil {
+		panic(err)
+	}
+	introLength := stream.Length() / 23
+	bgStream := audio.NewInfiniteLoopWithIntro(stream, introLength, stream.Length()-introLength)
+	s.bgMusic, err = audioContext.NewPlayer(bgStream)
+	if err != nil {
+		panic(err)
+	}
+	s.bgMusic.Play()
 }
 
 func loadSounds(soundData map[core.EnergyType][]byte, audioContext *audio.Context) map[core.EnergyType]*audio.Player {
