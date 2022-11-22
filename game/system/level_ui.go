@@ -22,26 +22,26 @@ var scoreQuery = ecs.NewQuery(
 		component.Score,
 	))
 
-type modal struct {
+type levelUI struct {
 	modalQuery *query.Query
-	modalUI    *furex.View
-	bg         *ebiten.Image
+	view       *furex.View
+	modalBg    *ebiten.Image
 }
 
-var Modal = &modal{
-	bg: ebiten.NewImage(config.WindowWidth, config.WindowHeight),
+var LevelUI = &levelUI{
+	modalBg: ebiten.NewImage(config.WindowWidth, config.WindowHeight),
 	modalQuery: ecs.NewQuery(
-		layers.LayerModal,
+		layers.LayerUI,
 		filter.Contains(
 			component.Modal,
 		)),
 }
 
-func (m *modal) Startup(ecs *ecs.ECS) {
-	m.bg.Fill(color.White)
+func (ui *levelUI) Startup(ecs *ecs.ECS) {
+	ui.modalBg.Fill(color.White)
 
 	modal := ecs.Create(
-		layers.LayerModal,
+		layers.LayerUI,
 		component.Modal,
 	)
 	entry := ecs.World.Entry(modal)
@@ -50,11 +50,22 @@ func (m *modal) Startup(ecs *ecs.ECS) {
 		Text:   config.ModalText,
 	})
 
-	m.modalUI = (&furex.View{
-		Width:      config.WindowWidth,
-		Height:     config.WindowHeight,
-		AlignItems: furex.AlignItemEnd,
-		Direction:  furex.Column,
+	ui.view = (&furex.View{
+		Width:     config.WindowWidth,
+		Height:    config.WindowHeight,
+		Direction: furex.Row,
+		Justify:   furex.JustifySpaceBetween,
+	}).AddChild(&furex.View{
+		Width:      80,
+		Height:     80,
+		MarginTop:  20,
+		MarginLeft: 20,
+		Handler: &uicomponent.Toggle{
+			ImageOn:  assets.ImageManager.SoundOn,
+			ImageOff: assets.ImageManager.SoundOff,
+			On:       true,
+			OnToggle: assets.SoundManager.Toggle,
+		},
 	}).AddChild(&furex.View{
 		Width:       80,
 		Height:      80,
@@ -63,7 +74,7 @@ func (m *modal) Startup(ecs *ecs.ECS) {
 		Handler: &uicomponent.Button{
 			Text: "?",
 			OnClick: func() {
-				modal, ok := m.modalQuery.FirstEntity(ecs.World)
+				modal, ok := ui.modalQuery.FirstEntity(ecs.World)
 				if !ok {
 					panic("no modal")
 				}
@@ -74,26 +85,30 @@ func (m *modal) Startup(ecs *ecs.ECS) {
 	})
 }
 
-func (m *modal) Update(ecs *ecs.ECS) {
-	m.modalUI.Update()
+func (ui *levelUI) Update(ecs *ecs.ECS) {
+	ui.view.Update()
 }
 
-func (m *modal) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
+func (ui *levelUI) Draw(ecs *ecs.ECS, screen *ebiten.Image) {
 	score, ok := scoreQuery.FirstEntity(ecs.World)
 	if ok && component.Score.Get(score).GameOver() {
 		return
 	}
 
-	modal, ok := m.modalQuery.FirstEntity(ecs.World)
+	modal, ok := ui.modalQuery.FirstEntity(ecs.World)
 	if !ok {
 		panic("no modal")
 	}
 	modalEntry := component.Modal.Get(modal)
 	if modalEntry.Active {
-		screen.DrawImage(m.bg, nil)
-		text.Draw(screen, "Spooky Paths", assets.FontManager.Creepster72, 40, 100, color.Black)
-		text.Draw(screen, modalEntry.Text, assets.FontManager.Mona36, 40, 180, color.Black)
+		ui.drawModal(screen, modalEntry)
 	}
 
-	m.modalUI.Draw(screen)
+	ui.view.Draw(screen)
+}
+
+func (ui *levelUI) drawModal(screen *ebiten.Image, modalEntry *component.ModalData) {
+	screen.DrawImage(ui.modalBg, nil)
+	text.Draw(screen, "Spooky Paths", assets.FontManager.Creepster72, 40, 100, color.Black)
+	text.Draw(screen, modalEntry.Text, assets.FontManager.Mona36, 40, 180, color.Black)
 }

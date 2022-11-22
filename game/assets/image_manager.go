@@ -13,6 +13,8 @@ import (
 
 type imageManager struct {
 	energyImages map[core.EnergyType]*ebiten.Image
+	SoundOff     *ebiten.Image
+	SoundOn      *ebiten.Image
 }
 
 // Make sure it conforms to the Manager interface
@@ -37,6 +39,9 @@ func (m *imageManager) Load() {
 	}
 
 	m.energyImages = loadEnergyTypeImages()
+
+	m.SoundOff = LoadImage(images.Sound_off_png)
+	m.SoundOn = LoadImage(images.Sound_on_png)
 }
 
 func loadEnergyTypeImages() map[core.EnergyType]*ebiten.Image {

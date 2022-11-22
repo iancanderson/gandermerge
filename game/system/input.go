@@ -105,7 +105,7 @@ var Input = &input{
 			component.Score,
 		)),
 	modalQuery: ecs.NewQuery(
-		layers.LayerModal,
+		layers.LayerUI,
 		filter.Contains(
 			component.Modal,
 		)),

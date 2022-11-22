@@ -75,7 +75,7 @@ func NewLevelScreen(seed int64, backToMainMenu func()) *LevelScreen {
 	scorer.Startup(g.ecs)
 
 	system.Enemy.Startup(g.ecs)
-	system.Modal.Startup(g.ecs)
+	system.LevelUI.Startup(g.ecs)
 
 	g.ecs.AddSystem(system.Input.Update)
 	g.ecs.AddSystem(system.GridGravity.Update)
@@ -87,8 +87,8 @@ func NewLevelScreen(seed int64, backToMainMenu func()) *LevelScreen {
 	g.ecs.AddSystem(system.Scorer.Update)
 	g.ecs.AddRenderer(layers.LayerUI, system.Scoreboard.Draw)
 	g.ecs.AddSystem(system.Expirator.Update)
-	g.ecs.AddSystem(system.Modal.Update)
-	g.ecs.AddRenderer(layers.LayerModal, system.Modal.Draw)
+	g.ecs.AddSystem(system.LevelUI.Update)
+	g.ecs.AddRenderer(layers.LayerUI, system.LevelUI.Draw)
 
 	g.setupMenuUI()
 

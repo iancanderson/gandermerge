@@ -14,6 +14,7 @@ type soundManager struct {
 	chainSounds map[core.EnergyType]*audio.Player
 	mergeSounds map[core.EnergyType]*audio.Player
 	bgMusic     *audio.Player
+	playSounds  bool
 }
 
 // Make sure it conforms to the Manager interface
@@ -22,6 +23,7 @@ var _ Manager = (*soundManager)(nil)
 var SoundManager = &soundManager{
 	chainSounds: make(map[core.EnergyType]*audio.Player),
 	mergeSounds: make(map[core.EnergyType]*audio.Player),
+	playSounds:  true,
 }
 
 func (s *soundManager) Load() {
@@ -59,6 +61,16 @@ func (s *soundManager) Load() {
 	s.bgMusic.Play()
 }
 
+func (s *soundManager) Toggle() {
+	if s.bgMusic.IsPlaying() {
+		s.bgMusic.Pause()
+	} else {
+		s.bgMusic.Play()
+	}
+
+	s.playSounds = !s.playSounds
+}
+
 func loadSounds(soundData map[core.EnergyType][]byte, audioContext *audio.Context) map[core.EnergyType]*audio.Player {
 	sounds := make(map[core.EnergyType]*audio.Player)
 
@@ -77,6 +89,10 @@ func loadSounds(soundData map[core.EnergyType][]byte, audioContext *audio.Contex
 }
 
 func (s *soundManager) PlayChain(energyType core.EnergyType) {
+	if !s.playSounds {
+		return
+	}
+
 	player := s.chainSounds[energyType]
 	if player == nil {
 		return
@@ -94,6 +110,10 @@ func (s *soundManager) PauseChain(energyType core.EnergyType) {
 }
 
 func (s *soundManager) PlayMerge(energyType core.EnergyType) {
+	if !s.playSounds {
+		return
+	}
+
 	player := s.mergeSounds[energyType]
 	if player == nil {
 		return

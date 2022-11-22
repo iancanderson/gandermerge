@@ -7,6 +7,5 @@ const (
 	LayerOrbs
 	LayerEnemy
 	LayerUI
-	LayerModal
 	LayerMetrics
 )

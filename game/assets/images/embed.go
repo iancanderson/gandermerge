@@ -6,6 +6,12 @@ import (
 )
 
 var (
+	//go:embed sound-off.png
+	Sound_off_png []byte
+
+	//go:embed sound-on.png
+	Sound_on_png []byte
+
 	//go:embed christmas-electric.png
 	Christmas_electric_png []byte
 
