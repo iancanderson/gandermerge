@@ -89,6 +89,7 @@ func NewLevelScreen(seed int64, backToMainMenu func()) *LevelScreen {
 	g.ecs.AddSystem(system.Expirator.Update)
 	g.ecs.AddSystem(system.LevelUI.Update)
 	g.ecs.AddRenderer(layers.LayerUI, system.LevelUI.Draw)
+	g.ecs.AddRenderer(layers.LayerModal, system.LevelUI.DrawModal)
 
 	g.setupMenuUI()
 
