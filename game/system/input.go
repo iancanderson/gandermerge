@@ -142,7 +142,7 @@ func (r *input) Update(ecs *ecs.ECS) {
 		r.selectableQuery.EachEntity(ecs.World, func(entry *donburi.Entry) {
 			sprite := component.Sprite.Get(entry)
 			inputX, inputY := r.inputSource.Position()
-			if sprite.In(inputX, inputY) {
+			if sprite.CloseTo(inputX, inputY) {
 				if r.chain.Add(entry) {
 					selectable := component.Selectable.Get(entry)
 					selectable.Selected = true
@@ -160,7 +160,7 @@ func (r *input) handleInputPressed(ecs *ecs.ECS) {
 	r.selectableQuery.EachEntity(ecs.World, func(entry *donburi.Entry) {
 		sprite := component.Sprite.Get(entry)
 		inputX, inputY := r.inputSource.Position()
-		if sprite.In(inputX, inputY) {
+		if sprite.CloseTo(inputX, inputY) {
 			r.chain = r.createOrbChain(entry)
 			selectable := component.Selectable.Get(entry)
 			selectable.Selected = true
