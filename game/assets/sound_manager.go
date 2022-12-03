@@ -48,12 +48,11 @@ func (s *soundManager) Load() {
 	}
 	s.mergeSounds = loadSounds(mergeSoundData, audioContext)
 
-	stream, err := vorbis.DecodeWithoutResampling(bytes.NewReader(sounds.BgMusicWithIntro))
+	stream, err := vorbis.DecodeWithoutResampling(bytes.NewReader(sounds.BgMusic))
 	if err != nil {
 		panic(err)
 	}
-	introLength := stream.Length() / 23
-	bgStream := audio.NewInfiniteLoopWithIntro(stream, introLength, stream.Length()-introLength)
+	bgStream := audio.NewInfiniteLoop(stream, stream.Length())
 	s.bgMusic, err = audioContext.NewPlayer(bgStream)
 	if err != nil {
 		panic(err)
